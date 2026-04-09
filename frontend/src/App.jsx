@@ -3,8 +3,10 @@ import { useChat } from './hooks/useChat'
 import Header from './components/Header/Header'
 import ChatArea from './components/Chat/ChatArea'
 import Dashboard from './components/Dashboard/Dashboard'
-import Sidebar from "./components/Sidebar/Sidebar";
+import Sidebar from './components/Sidebar/Sidebar'
 import Login from './components/Login/Login'
+import { DOMAINS } from './data/routes'
+import { getResponse } from './data/responses'
 
 const GEO_RE = /\b(iran|oil|fuel|brent|crude|geopolit|ceasefire|conflict|war|sanction)/i
 const CF_RE = /\b(what if|what would|counterfactual|reroute|had we|would have|if we had|alternative)/i
@@ -87,16 +89,19 @@ export default function App() {
   const [page, setPage] = useState('login')
   const [dashView, setDashView] = useState(null)
   const [showYoY, setShowYoY] = useState(false)
+  const [sidebarActive, setSidebarActive] = useState(() => ({
+    type: 'domain',
+    key: DOMAINS[0].label,
+  }))
   const firedSkills = useRef({ geo: false, cf: false, esc: false, yoy: false, csuite: false })
-  const { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage, showThinking, hideThinking } = useChat()
+  const { messages, typing, showChips, sendMessage, addUserMessage, addAgentMessage, showThinking, hideThinking } = useChat()
 
-  // Helper: show thinking for 5s, then run callback
-  const withThinking = useCallback((fn) => {
+  const withThinking = useCallback((fn, delayMs = 5000) => {
     showThinking()
     setTimeout(() => {
       hideThinking()
       fn()
-    }, 5000)
+    }, delayMs)
   }, [showThinking, hideThinking])
 
   const handleSend = useCallback((text) => {
@@ -145,22 +150,35 @@ export default function App() {
       // All other questions — use local response engine (no Claude CLI, no thinking)
       sendMessage(text, { useLocalResponse: true })
     }
-  }, [sendMessage, addUserMessage, addAgentMessage])
+  }, [sendMessage, addUserMessage, addAgentMessage, withThinking])
+
+  const handleSidebarPrompt = useCallback(
+    (prompt, _opts, selection) => {
+      setPage('chat')
+      if (selection) setSidebarActive(selection)
+      const trimmed = prompt.trim()
+      if (!trimmed) return
+      if (!addUserMessage(trimmed)) return
+      setTimeout(() => {
+        showThinking()
+        setTimeout(() => {
+          hideThinking()
+          addAgentMessage(getResponse(trimmed))
+        }, 3000)
+      }, 0)
+    },
+    [addUserMessage, addAgentMessage, showThinking, hideThinking]
+  )
 
   if (page === 'login') {
     return <Login onLogin={() => setPage('chat')} />
-  }
-
-  const handleSidebarPrompt = (prompt, opts) => {
-    setPage('chat')
-    firePrompt(prompt, opts)
   }
 
   return (
     <>
       <Header page={page} setPage={setPage} />
       <div className="main">
-        <Sidebar firePrompt={handleSidebarPrompt} />
+        <Sidebar firePrompt={handleSidebarPrompt} activeSelection={sidebarActive} />
         {page === 'dash' ? (
           <Dashboard view={dashView} showYoY={showYoY} />
         ) : (
