@@ -12,7 +12,7 @@ export default function Sidebar({ firePrompt }) {
           <div
             key={d.label}
             className={`sb-item${i === 0 ? ' active' : ''}`}
-            onClick={() => firePrompt(d.prompt)}
+            onClick={() => firePrompt(d.prompt, { useLocalResponse: true })}
           >
             <span className="sb-icon">{d.icon}</span>
             {d.label}
@@ -32,7 +32,7 @@ export default function Sidebar({ firePrompt }) {
             code={r.code}
             margin={r.margin}
             marginColor={r.marginColor}
-            onClick={() => firePrompt(r.prompt)}
+            onClick={() => firePrompt(r.prompt, { useLocalResponse: true })}
           />
         ))}
       </div>

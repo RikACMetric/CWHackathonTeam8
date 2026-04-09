@@ -13,7 +13,7 @@ export default function MetricsBar({ firePrompt }) {
           delta={m.delta}
           type={m.type}
           valueColor={m.valueColor}
-          onClick={() => firePrompt(m.prompt)}
+          onClick={() => firePrompt(m.prompt, { useLocalResponse: true })}
         />
       ))}
     </div>
