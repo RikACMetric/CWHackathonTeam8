@@ -9,8 +9,10 @@ export default function App() {
 
   return (
     <>
-      <Header />      
+      <Header />  
+
       <div className="main">        
+        <Sidebar  firePrompt={firePrompt} />
         <ChatArea
           messages={messages}
           typing={typing}
