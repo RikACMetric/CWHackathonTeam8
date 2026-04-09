@@ -144,11 +144,16 @@ export default function App() {
     return <Login onLogin={() => setPage('chat')} />
   }
 
+  const handleSidebarPrompt = (prompt, opts) => {
+    setPage('chat')
+    firePrompt(prompt, opts)
+  }
+
   return (
     <>
       <Header page={page} setPage={setPage} />
       <div className="main">
-        <Sidebar firePrompt={firePrompt} />
+        <Sidebar firePrompt={handleSidebarPrompt} />
         {page === 'dash' ? (
           <Dashboard view={dashView} showYoY={showYoY} />
         ) : (
