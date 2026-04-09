@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import MessageBubble from './MessageBubble'
 import TypingIndicator from './TypingIndicator'
 
-export default function ChatMessages({ messages, typing }) {
+export default function ChatMessages({ messages, typing, showHero = false }) {
   const bottomRef = useRef(null)
 
   useEffect(() => {
@@ -10,7 +10,7 @@ export default function ChatMessages({ messages, typing }) {
   }, [messages, typing])
 
   return (
-    <div className="chat-messages">
+    <div className={`chat-messages${showHero ? ' chat-messages--with-hero' : ''}`}>
       {messages.map((msg) => (
         <MessageBubble key={msg.id} role={msg.role} content={msg.content} time={msg.time} />
       ))}
