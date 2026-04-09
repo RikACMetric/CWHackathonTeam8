@@ -37,7 +37,7 @@ export default function ChatInput({ onSend, disabled }) {
           rows={1}
           value={value}
           disabled={disabled}
-          placeholder="Ask about routes, margins, disruptions, customers, or investment priorities…"
+          placeholder="Ask the fleet — routes, margins, disruptions, or investment priorities…"
           onChange={(e) => { setValue(e.target.value); grow() }}
           onKeyDown={handleKey}
         />

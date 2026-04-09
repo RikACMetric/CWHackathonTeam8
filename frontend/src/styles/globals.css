@@ -1,39 +1,59 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* Ivory Cargo (Stitch design system) — Intelligence Agent (Light) */
 :root {
-  --bg:          #060b14;
-  --surface:     #0c1220;
-  --card:        #111a2e;
-  --card-hover:  #172036;
-  --border:      #1c2b44;
-  --border-dim:  #111927;
-  --gold:        #D4A843;
-  --gold-light:  #e6c060;
-  --gold-dim:    rgba(212,168,67,.12);
-  --gold-glow:   rgba(212,168,67,.25);
-  --text:        #dce8f5;
-  --text-muted:  #7a96b8;
-  --text-dim:    #384d65;
-  --ok:          #22c984;
-  --warn:        #f5a623;
-  --bad:         #f04060;
-  --info:        #4891e0;
-  --ok-dim:      rgba(34,201,132,.12);
-  --warn-dim:    rgba(245,166,35,.12);
-  --bad-dim:     rgba(240,64,96,.12);
-  --info-dim:    rgba(72,145,224,.12);
-  --scan-line:   repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.015) 2px, rgba(255,255,255,.015) 4px);
+  --bg:                 #f9f9f7;
+  --surface:            #f9f9f7;
+  --surface-low:        #f4f4f2;
+  --surface-container:  #eeeeec;
+  --surface-high:       #e8e8e6;
+  --surface-highest:    #e2e3e1;
+  --surface-elevated:   #ffffff;
+  --card:               #eeeeec;
+  --card-hover:         #e8e8e6;
+  /* Ghost borders (outline_variant @ ~15–20%) — prefer tonal layers over hard lines */
+  --border:             rgba(185, 203, 188, 0.35);
+  --border-dim:         rgba(185, 203, 188, 0.22);
+  --outline-ghost:      rgba(185, 203, 188, 0.15);
+  /* Brand: primary → mint (gradient CTAs) */
+  --primary:            #006d40;
+  --primary-container:  #00ff9c;
+  --primary-fixed-dim:  #00e38a;
+  --secondary:          #0e6c41;
+  --secondary-container:#a0f5bd;
+  /* Legacy aliases — map old “gold” tokens to Cargo green */
+  --gold:               var(--primary);
+  --gold-light:         var(--primary-fixed-dim);
+  --gold-dim:           rgba(0, 109, 64, 0.09);
+  --gold-glow:          rgba(0, 255, 156, 0.22);
+  --text:               #1a1c1b;
+  --text-muted:         #3b4b3f;
+  --text-dim:           #6a7b6e;
+  --ok:                 #0e6c41;
+  --warn:               #b45309;
+  --bad:                #ba1a1a;
+  --info:               #006d40;
+  --ok-dim:             rgba(14, 108, 65, 0.12);
+  --warn-dim:           rgba(180, 83, 9, 0.12);
+  --bad-dim:            rgba(186, 26, 26, 0.1);
+  --info-dim:           rgba(0, 109, 64, 0.1);
+  --shadow-ambient:     0 8px 32px rgba(26, 28, 27, 0.06);
+  --radius-sm:          4px;
+  --radius-md:          8px;
+  --radius-pill:        9999px;
+  --scan-line:          none;
 }
 
 html, body { height: 100%; overflow: hidden; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Manrope', system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   display: flex;
   flex-direction: column;
   position: relative;
+  letter-spacing: -0.01em;
 }
 
 body::before {
@@ -41,9 +61,7 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(212,168,67,.06) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 60% at 5% 80%, rgba(72,145,224,.04) 0%, transparent 60%);
+  background: radial-gradient(ellipse 70% 50% at 90% 0%, rgba(0, 109, 64, 0.04) 0%, transparent 55%);
   z-index: 0;
 }
 
@@ -66,19 +84,20 @@ body::before {
 .c-ok   { color: var(--ok); }
 .c-bad  { color: var(--bad); }
 .c-warn { color: var(--warn); }
-.c-gold { color: var(--gold); }
+.c-gold { color: var(--primary); }
 .c-info { color: var(--info); }
 .c-mute { color: var(--text-muted); }
 
-/* ─── Status tags ─── */
+/* ─── Status tags (stamp / spec-sheet) ─── */
 .tag {
   display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
+  padding: 3px 8px;
+  border-radius: 2px;
   font-size: 10px;
   font-weight: 600;
-  font-family: 'DM Mono', monospace;
-  letter-spacing: .3px;
+  font-family: 'Manrope', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 .tag-ok   { background: var(--ok-dim);   color: var(--ok); }
 .tag-bad  { background: var(--bad-dim);  color: var(--bad); }
@@ -91,55 +110,57 @@ body::before {
   border-collapse: collapse;
   margin: 10px 0;
   font-size: 12px;
+  line-height: 1.6;
 }
 .dtable th {
-  background: rgba(212,168,67,.06);
+  background: var(--surface-container);
   color: var(--text-dim);
-  font-family: 'DM Mono', monospace;
+  font-family: 'Manrope', sans-serif;
   font-size: 9px;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   text-align: left;
-  padding: 7px 10px;
-  border-bottom: 1px solid var(--border);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--outline-ghost);
 }
 .dtable td {
-  padding: 7px 10px;
-  border-bottom: 1px solid rgba(28,43,68,.6);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--outline-ghost);
   font-size: 12.5px;
   vertical-align: middle;
 }
 .dtable tr:last-child td { border-bottom: none; }
-.dtable .mono { font-family: 'DM Mono', monospace; }
+.dtable .mono { font-family: 'DM Mono', monospace; font-size: 12px; }
 
 /* ─── Confidence note ─── */
 .conf-note {
   margin-top: 12px;
-  padding: 8px 12px;
-  background: rgba(72,145,224,.07);
-  border-left: 2px solid var(--info);
-  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+  background: rgba(0, 109, 64, 0.06);
+  border-left: 3px solid var(--primary-container);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
   font-size: 12px;
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.6;
 }
-.conf-note strong { color: var(--info); }
+.conf-note strong { color: var(--primary); }
 
 /* ─── Recommendation card ─── */
 .rec-card {
-  background: rgba(212,168,67,.05);
-  border: 1px solid rgba(212,168,67,.18);
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin: 8px 0;
+  background: var(--surface-low);
+  border: 1px solid var(--outline-ghost);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin: 10px 0;
 }
 .rec-card .rec-num {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 11px;
   font-weight: 700;
-  color: var(--gold);
-  margin-bottom: 3px;
+  letter-spacing: -0.02em;
+  color: var(--primary);
+  margin-bottom: 4px;
 }
 .rec-card .rec-title { font-weight: 600; font-size: 13px; }
-.rec-card .rec-detail { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.rec-card .rec-detail { font-size: 12px; color: var(--text-muted); margin-top: 6px; line-height: 1.55; }

@@ -16,7 +16,7 @@ const WELCOME = {
   <li><strong>FRA–PVG disruption costs have tripled</strong> this quarter. Root cause is ramp handling SLA failures at Frankfurt — not weather. Cost in Q1 alone: <strong class="c-bad">€680K</strong>.</li>
   <li><strong>LHR–ORD is your standout route</strong> at 24.1% margin — the dynamic pricing pilot is working. This is the model to replicate.</li>
 </ul>
-<p>Ask me anything about the data. Click any metric above or route in the sidebar to dive in. I will tell you what the data can prove — and flag where confidence is lower.</p>
+<p>Ask me anything about the data. I will tell you what the numbers can prove — and flag where confidence is lower.</p>
 `,
 }
 
