@@ -37,6 +37,33 @@ export const routeExposure = [
   { route: 'AMS–NBO', fuelDelta: 120, marginImpact: -0.5, collapseRisk: 'Manageable', severity: 'ok' },
 ]
 
+// Year-on-year comparison — same Q1 period, last year vs this year
+export const yoyComparison = [
+  { week: 'W1',  fuelCostThisYear: 820, fuelCostLastYear: 780, marginThisYear: 19.7, marginLastYear: 21.2, brentThisYear: 78, brentLastYear: 74 },
+  { week: 'W2',  fuelCostThisYear: 845, fuelCostLastYear: 775, marginThisYear: 19.4, marginLastYear: 21.4, brentThisYear: 81, brentLastYear: 73 },
+  { week: 'W3',  fuelCostThisYear: 870, fuelCostLastYear: 782, marginThisYear: 19.1, marginLastYear: 21.1, brentThisYear: 84, brentLastYear: 74 },
+  { week: 'W4',  fuelCostThisYear: 890, fuelCostLastYear: 790, marginThisYear: 18.9, marginLastYear: 20.9, brentThisYear: 86, brentLastYear: 75 },
+  { week: 'W5',  fuelCostThisYear: 920, fuelCostLastYear: 785, marginThisYear: 18.6, marginLastYear: 21.0, brentThisYear: 89, brentLastYear: 74 },
+  { week: 'W6',  fuelCostThisYear: 940, fuelCostLastYear: 788, marginThisYear: 18.4, marginLastYear: 21.1, brentThisYear: 91, brentLastYear: 74 },
+  { week: 'W7',  fuelCostThisYear: 955, fuelCostLastYear: 792, marginThisYear: 18.2, marginLastYear: 20.8, brentThisYear: 93, brentLastYear: 75 },
+  { week: 'W8',  fuelCostThisYear: 965, fuelCostLastYear: 795, marginThisYear: 18.1, marginLastYear: 20.7, brentThisYear: 94, brentLastYear: 75 },
+  { week: 'W9',  fuelCostThisYear: 975, fuelCostLastYear: 790, marginThisYear: 18.0, marginLastYear: 20.9, brentThisYear: 95, brentLastYear: 74 },
+  { week: 'W10', fuelCostThisYear: 980, fuelCostLastYear: 788, marginThisYear: 17.9, marginLastYear: 21.0, brentThisYear: 96, brentLastYear: 74 },
+  { week: 'W11', fuelCostThisYear: 990, fuelCostLastYear: 785, marginThisYear: 17.8, marginLastYear: 21.2, brentThisYear: 97, brentLastYear: 73 },
+  { week: 'W12', fuelCostThisYear: 990, fuelCostLastYear: 782, marginThisYear: 17.8, marginLastYear: 21.3, brentThisYear: 97, brentLastYear: 73 },
+  { week: 'W13', fuelCostThisYear: 995, fuelCostLastYear: 780, marginThisYear: 17.7, marginLastYear: 21.4, brentThisYear: 97, brentLastYear: 73 },
+]
+
+export const yoySummary = {
+  fuelCostDelta: '+€2.4M',
+  marginDelta: '−3.1pp',
+  brentDelta: '+$23/bbl (+31%)',
+  lastYearAvgMargin: '21.1%',
+  thisYearAvgMargin: '18.5%',
+  lastYearAvgBrent: '$74/bbl',
+  thisYearAvgBrent: '$90/bbl',
+}
+
 export const summary = {
   brentStart: '$78/bbl',
   brentNow: '$97/bbl',

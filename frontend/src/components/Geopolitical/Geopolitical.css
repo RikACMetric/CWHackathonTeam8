@@ -153,6 +153,43 @@
   font-weight: 700;
 }
 
+.geo-yoy-banner {
+  background: rgba(37,99,235,.05);
+  border: 1px solid rgba(37,99,235,.15);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+}
+.geo-yoy-banner h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 12px;
+}
+.geo-yoy-kpis {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.geo-yoy-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.geo-yoy-val {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.geo-yoy-val.bad { color: var(--bad); }
+.geo-yoy-val.warn { color: var(--warn); }
+.geo-yoy-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
 @media (max-width: 900px) {
   .geo-charts { grid-template-columns: 1fr; }
 }
