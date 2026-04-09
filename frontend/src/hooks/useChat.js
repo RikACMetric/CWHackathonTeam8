@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import { getResponse } from '../data/responses'
 
 function nowTime() {
   return new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
@@ -26,19 +27,30 @@ export function useChat() {
   const [showChips, setShowChips] = useState(true)
   const busy = useRef(false)
 
-  const sendMessage = useCallback((text) => {
+  const sendMessage = useCallback((text, options = {}) => {
+    const useLocalResponse = options.useLocalResponse === true
     if (busy.current || !text.trim()) return
 
     busy.current = true
     setShowChips(false)
 
+    const trimmed = text.trim()
     const userMsg = {
       id: `u-${Date.now()}`,
       role: 'user',
       time: nowTime(),
-      content: text.trim(),
+      content: trimmed,
     }
     setMessages((prev) => [...prev, userMsg])
+
+    if (useLocalResponse) {
+      const agentId = `a-${Date.now()}`
+      const content = getResponse(trimmed)
+      setMessages((prev) => [...prev, { id: agentId, role: 'agent', time: nowTime(), content }])
+      busy.current = false
+      return
+    }
+
     setTyping(true)
 
     const agentId = `a-${Date.now()}`
@@ -99,8 +111,8 @@ export function useChat() {
   }, [])
 
   const firePrompt = useCallback(
-    (text) => {
-      sendMessage(text)
+    (text, options = {}) => {
+      sendMessage(text, options)
     },
     [sendMessage]
   )
