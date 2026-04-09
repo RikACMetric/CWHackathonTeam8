@@ -118,7 +118,7 @@ export function useChat() {
   )
 
   const addUserMessage = useCallback((text) => {
-    if (busy.current || !text.trim()) return
+    if (busy.current || !text.trim()) return false
     setShowChips(false)
     setMessages((prev) => [...prev, {
       id: `u-${Date.now()}`,
@@ -126,6 +126,7 @@ export function useChat() {
       time: nowTime(),
       content: text.trim(),
     }])
+    return true
   }, [])
 
   const addAgentMessage = useCallback((html) => {
