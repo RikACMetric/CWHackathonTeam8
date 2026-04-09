@@ -4,10 +4,15 @@ import Header from './components/Header/Header'
 import ChatArea from './components/Chat/ChatArea'
 import Counterfactual from './components/Counterfactual/Counterfactual'
 import Sidebar from "./components/Sidebar/Sidebar";
+import Login from './components/Login/Login'
 
 export default function App() {
   const { messages, typing, showChips, sendMessage, firePrompt } = useChat()
-  const [page, setPage] = useState('chat')
+  const [page, setPage] = useState('login')
+
+  if (page === 'login') {
+    return <Login onLogin={() => setPage('chat')} />
+  }
 
   return (
     <>
