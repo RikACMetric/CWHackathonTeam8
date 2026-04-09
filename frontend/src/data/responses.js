@@ -1,3 +1,10 @@
+import { matchSkill, listSkillSummaries } from './skills'
+
+// ─── Skill-based response dispatch ────────────────────────────────────────
+const SKILL_RESPONSES = {
+  counterfactual: counterfactualAnalysis,
+}
+
 // ─── Response engine ───────────────────────────────────────────────────────
 export function getResponse(q) {
   const t = q.toLowerCase()
@@ -28,6 +35,12 @@ export function getResponse(q) {
     return revenue()
   if (/\b(margin drop|drop in margin|why.*margin|margin.*why|2\.1pp)\b/.test(t))
     return marginDrop()
+
+  // ── Skill-based matching ──────────────────────────────────────────────
+  const skill = matchSkill(q)
+  if (skill && SKILL_RESPONSES[skill.responseFn]) {
+    return SKILL_RESPONSES[skill.responseFn](q)
+  }
 
   return fallback(q)
 }
@@ -374,7 +387,55 @@ function marginDrop() {
 <div class="conf-note"><strong>Confidence: High for the FRA–PVG and CDG–JFK attribution.</strong> The AMS–DXB figure is a directional estimate — isolating the exact margin impact of Gulf carrier competition involves assumptions about counterfactual booking patterns that cannot be directly measured.</div>`
 }
 
+// ─── Skill: Counterfactual Analysis ───────────────────────────────────────
+function counterfactualAnalysis(_q) {
+  return `
+<h4>Counterfactual Analysis — Extra Friday Capacity on AMS–DXB (Q1)</h4>
+<p><span class="tag tag-info">SKILL: Historical Counterfactual</span> &nbsp; Replaying Q1 with an alternative operational decision to estimate impact.</p>
+
+<h4>Scenario</h4>
+<table class="dtable">
+  <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>Route</td><td class="mono">AMS–DXB</td></tr>
+    <tr><td>Period</td><td>Q1 2025 (13 Fridays)</td></tr>
+    <tr><td>Intervention</td><td>Add 1 extra wide-body cargo flight per Friday (+20% Friday capacity)</td></tr>
+    <tr><td>Method</td><td>Replay actual bookings, re-allocate rollovers, recompute financials</td></tr>
+  </tbody>
+</table>
+
+<h4>Estimated Impact vs Actuals</h4>
+<table class="dtable">
+  <thead><tr><th>Metric</th><th>Actual (Q1)</th><th>Counterfactual</th><th>Delta</th></tr></thead>
+  <tbody>
+    <tr><td>Lane Margin</td><td class="c-warn mono">+9.2%</td><td class="c-ok mono">+15.7%</td><td class="c-ok">+€420K (+6.5pp)</td></tr>
+    <tr><td>Disruption Cost</td><td class="c-warn mono">€180K</td><td class="c-ok mono">€70K</td><td class="c-ok">−€110K (−61%)</td></tr>
+    <tr><td>Friday Load Factor</td><td class="c-warn">69%</td><td class="c-ok">81%</td><td class="c-ok">+12pp</td></tr>
+    <tr><td>OTP (time-critical)</td><td class="c-warn">87.1%</td><td class="c-ok">91.3%</td><td class="c-ok">+4.2pp</td></tr>
+    <tr><td>Rollover Events</td><td class="c-bad">38 events</td><td class="c-ok">7 events</td><td class="c-ok">−82%</td></tr>
+  </tbody>
+</table>
+
+<h4>How This Was Computed</h4>
+<ul>
+  <li><strong>Baseline reconstruction:</strong> Loaded all Q1 AMS–DXB bookings by product and departure day — actual capacity, load factors, disruptions (rollovers, missed connections), and financials.</li>
+  <li><strong>Applied the intervention rule:</strong> For each Friday, increased available capacity by 20%. Re-allocated the 38 overflow shipments that were historically rolled onto Saturday flights. Reduced rollover-related disruption probability according to observed relationships.</li>
+  <li><strong>Re-computed metrics:</strong> Revenue (more shipments at correct product/rate), direct operating costs (extra flight cost ~€95K total over 13 Fridays), disruption costs (fewer rollovers → fewer penalty payments), OTP and NPS proxies for time-critical products.</li>
+  <li><strong>Result:</strong> Extra capacity would have absorbed 82% of the Friday overflow. After deducting the additional flight cost, net margin improvement is <strong class="c-ok">+€420K</strong> over the quarter.</li>
+</ul>
+
+<h4>Suggested Action</h4>
+<div class="rec-card">
+  <div class="rec-num">NEXT STEP · Medium confidence · 4-week live test</div>
+  <div class="rec-title">Run a 4-week live test adding extra Friday capacity on AMS–DXB</div>
+  <div class="rec-detail">Track: load factor, margin, disruption cost, and OTP for time-critical product versus the same period last year. If results confirm the counterfactual estimate, scale to AMS–JFK and FRA–DXB which show similar Friday overflow patterns.</div>
+</div>
+
+<div class="conf-note"><strong>Confidence: Medium.</strong> Based on replaying 13 weeks of actual data with a single variable change. Supported by similar historical patterns on AMS–JFK and FRA–DXB. Remaining uncertainty is driven by weather-related disruptions (not modelled in the intervention) and competitive capacity responses from Gulf carriers.</div>`
+}
+
 function fallback(q) {
+  const skillList = listSkillSummaries()
   return `
 <p>I do not have a specific data match for that question yet. Based on what you asked, here are three things I can answer that may be relevant:</p>
 <ul>
@@ -382,6 +443,7 @@ function fallback(q) {
   <li><strong>Disruption costs</strong> — root causes, cost breakdown, and what can be recovered through SLA penalties.</li>
   <li><strong>Investment priorities</strong> — where the data supports acting now, and where more data is needed first.</li>
 </ul>
+${skillList ? `<p><strong>I also have these specialised skills loaded:</strong></p><ul>${skillList}</ul>` : ''}
 <p>Try asking in those terms, or click any metric in the bar above or a route in the sidebar to go directly to that data. What would be most useful?</p>
 <div class="conf-note"><strong>Note:</strong> CargoClaw is connected to TopFlight's operational data across 6 routes and 34 customer accounts. Questions outside that scope — e.g. competitor cost structures, macro freight market data, or data from other business units — are outside what I can answer with TopFlight's own evidence.</div>`
 }
