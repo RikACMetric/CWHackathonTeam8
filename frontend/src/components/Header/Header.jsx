@@ -1,6 +1,23 @@
+import { useEffect, useRef, useState } from 'react'
 import './Header.css'
 
+function formatLastSyncAgo(lastSyncMs, nowMs) {
+  const diffMin = Math.floor((nowMs - lastSyncMs) / 60_000)
+  if (diffMin < 1) return 'just now'
+  if (diffMin < 60) return `${diffMin} min ago`
+  const hrs = Math.floor(diffMin / 60)
+  return `${hrs} hr ago`
+}
+
 export default function Header({ page, setPage }) {
+  const lastSyncRef = useRef(Date.now() - 2 * 60_000)
+  const [now, setNow] = useState(() => Date.now())
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60_000)
+    return () => clearInterval(id)
+  }, [])
+
   return (
     <header>
       <div className="logo">
@@ -26,7 +43,7 @@ export default function Header({ page, setPage }) {
       <div className="header-center">
         <div className="pulse-dot" />
         <span className="status-txt">
-          Connected · <em>TopFlight Live Data</em> · Last sync 2 min ago
+          Connected · <em>TopFlight Live Data</em> · Last sync {formatLastSyncAgo(lastSyncRef.current, now)}
         </span>
       </div>
 
