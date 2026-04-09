@@ -25,6 +25,21 @@ export const SKILLS = [
       'Run a counterfactual on LHR–ORD without dynamic pricing',
     ],
   },
+  {
+    id: 'geopolitical-impact',
+    file: 'geopolitical_impact_skill.md',
+    name: 'Geopolitical Shock & Oil Price Impact',
+    description:
+      'Analyse how the Iran conflict, rising oil prices, and potential ceasefire collapse affect fuel costs, route margins, and customer contracts.',
+    triggers:
+      /\b(iran|oil price|oil.?prices|fuel cost|fuel price|geopolit|war|conflict|ceasefire|escalat|brent|crude|sanctions|strait.?of.?hormuz|gulf.?crisis|shock.?impact|shock.?analysis)\b/i,
+    responseFn: 'geopoliticalImpact',
+    exampleQuestions: [
+      'How is the Iran situation affecting our fuel costs?',
+      'What happens to margins if oil hits $120?',
+      'What if the ceasefire falls through?',
+    ],
+  },
 ]
 
 /**

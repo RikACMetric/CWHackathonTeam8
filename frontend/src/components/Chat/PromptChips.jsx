@@ -5,7 +5,8 @@ const CHIPS = [
   'Which customers are at risk?',
   'What is actually working?',
   'Show me the FRA–PVG situation',
-  'What if we had added extra Friday capacity on AMS–DXB?',
+  'How are rising oil prices impacting our margins?',
+  'What if the ceasefire falls through?',
 ]
 
 export default function PromptChips({ onSend }) {
