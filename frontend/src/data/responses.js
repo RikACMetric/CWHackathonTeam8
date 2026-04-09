@@ -4,6 +4,7 @@ import { matchSkill, listSkillSummaries } from './skills'
 const SKILL_RESPONSES = {
   counterfactual: counterfactualAnalysis,
   geopoliticalImpact: geopoliticalImpact,
+  escalation: escalationAnalysis,
 }
 
 // ─── Response engine ───────────────────────────────────────────────────────
@@ -591,6 +592,65 @@ function counterfactualAnalysis(_q) {
   <ul>
     <li><em>"How are rising oil prices impacting our margins?"</em></li>
     <li><em>"What if the ceasefire falls through?"</em></li>
+  </ul>
+</div>`
+}
+
+function escalationAnalysis() {
+  return `
+<h4>Escalation Analysis — FRA-PVG Cascade Failure</h4>
+<p><span class="tag tag-bad">SKILL: Cascade Failure Escalation</span> &nbsp; 6-week compounding disruption on Frankfurt–Shanghai.</p>
+
+<h4>Cascade Sequence</h4>
+<table class="dtable">
+  <thead><tr><th>Week</th><th>Event</th><th>Consequence</th><th>Cost (€K)</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">W1–W2</td><td>Ground-handling SLA miss (4 rotations)</td><td>+3.2 hr turnaround delay, absorbed within buffer</td><td class="c-warn mono">45</td></tr>
+    <tr><td class="mono">W3</td><td>Missed feeder windows</td><td>3 connecting truck feeders missed in Shanghai</td><td class="c-warn mono">48</td></tr>
+    <tr><td class="mono">W4</td><td>Crew duty-time violations</td><td>2 flight cancellations, customer complaints filed</td><td class="c-bad mono">87</td></tr>
+    <tr><td class="mono">W5</td><td>Customer volume shift</td><td>#2 pharma customer moved 40% volume to competitor</td><td class="c-bad mono">120</td></tr>
+    <tr><td class="mono">W6</td><td>Force majeure notice</td><td>PVG handler cites labour action — no support 8 rotations</td><td class="c-bad mono">140</td></tr>
+    <tr style="border-top: 1px solid var(--border)"><td><strong>Total</strong></td><td colspan="2"></td><td class="c-bad mono"><strong>440</strong></td></tr>
+  </tbody>
+</table>
+
+<h4>Current Impact vs Pre-Escalation</h4>
+<table class="dtable">
+  <thead><tr><th>Metric</th><th>Pre-Escalation</th><th>Current (W6)</th><th>Delta</th></tr></thead>
+  <tbody>
+    <tr><td>Lane Margin</td><td class="mono">+8.4%</td><td class="c-bad mono">+2.1%</td><td class="c-bad">−6.3pp</td></tr>
+    <tr><td>Weekly Revenue</td><td class="mono">€312K</td><td class="c-bad mono">€194K</td><td class="c-bad">−€118K/wk</td></tr>
+    <tr><td>Load Factor</td><td class="mono">78%</td><td class="c-bad mono">61%</td><td class="c-bad">−17pp</td></tr>
+    <tr><td>Customer Rev at Risk</td><td class="mono">—</td><td class="c-bad mono">€3.1M</td><td class="c-bad">annual</td></tr>
+    <tr><td>Projected Margin (W10)</td><td class="mono">—</td><td class="c-bad mono">−4.2%</td><td class="c-bad">margin-negative</td></tr>
+  </tbody>
+</table>
+
+<h4>Recommended Actions — Tier 1 (Immediate)</h4>
+<div class="rec-card">
+  <div class="rec-num">THIS WEEK · High confidence</div>
+  <div class="rec-title">Activate Swissport PVG standby contract</div>
+  <div class="rec-detail">Backup ground-handling covers next 8 rotations. Activation cost €45K. Prevents total service outage on FRA–PVG.</div>
+</div>
+<div class="rec-card">
+  <div class="rec-num">THIS WEEK · Medium-High confidence</div>
+  <div class="rec-title">Direct outreach to #2 pharma customer</div>
+  <div class="rec-detail">Offer guaranteed priority + SLA credits (€120K) to retain remaining 60% volume. Revenue at stake: €1.9M annually.</div>
+</div>
+<div class="rec-card">
+  <div class="rec-num">THIS WEEK · High confidence</div>
+  <div class="rec-title">Reroute 3 of 8 rotations via AMS–PVG</div>
+  <div class="rec-detail">AMS has confirmed capacity Tue/Thu/Sat. Maintains service continuity while PVG ground ops are offline.</div>
+</div>
+
+<div class="conf-note"><strong>Board-level ask:</strong> Approve €150K emergency spend for Swissport activation and customer retention. Worst-case exposure if unresolved: <strong class="c-bad">€4.8M annualised</strong>.</div>
+
+<div class="skill-link">
+  <p><strong>Related skills:</strong> <span class="tag tag-warn">Geopolitical Shock Analysis</span> &nbsp; <span class="tag tag-ok">Counterfactual Analysis</span></p>
+  <p>The FRA–PVG cascade is compounded by fuel cost pressure from the Iran conflict. Want to see the combined impact, or model what would have happened with an earlier intervention?</p>
+  <ul>
+    <li><em>"How are rising oil prices impacting FRA–PVG margins?"</em></li>
+    <li><em>"What if we had rerouted via AMS earlier?"</em></li>
   </ul>
 </div>`
 }

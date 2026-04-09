@@ -6,6 +6,9 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+# Store session ID so follow-up messages have conversation context
+session = {"id": None}
+
 
 @app.route("/api/chat", methods=["POST"])
 def chat():
@@ -15,17 +18,19 @@ def chat():
         return jsonify({"error": "No message provided"}), 400
 
     def stream():
+        cmd = [
+            "claude",
+            "-p", prompt,
+            "--output-format", "stream-json",
+            "--verbose",
+            "--allowedTools", "Edit,Write,Read,Bash,Glob,Grep",
+        ]
+        # Resume existing session for conversation continuity
+        if session["id"]:
+            cmd += ["--resume", session["id"]]
+
         proc = subprocess.Popen(
-            [
-                "claude",
-                "-p",
-                prompt,
-                "--output-format",
-                "stream-json",
-                "--verbose",
-                "--allowedTools",
-                "Edit,Write,Read,Bash,Glob,Grep",
-            ],
+            cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -38,8 +43,11 @@ def chat():
                 event = json.loads(line)
                 etype = event.get("type")
 
+                # Capture session ID from init or result
+                if etype == "system" and event.get("session_id"):
+                    session["id"] = event["session_id"]
+
                 if etype == "assistant":
-                    # Extract text content from the assistant message
                     content = event.get("message", {}).get("content", [])
                     for block in content:
                         if block.get("type") == "text":
@@ -48,6 +56,8 @@ def chat():
                             yield f"data: {json.dumps({'type': 'tool', 'tool': block.get('name', ''), 'input': block.get('input', {})})}\n\n"
 
                 elif etype == "result":
+                    if event.get("session_id"):
+                        session["id"] = event["session_id"]
                     yield f"data: {json.dumps({'type': 'done', 'content': event.get('result', '')})}\n\n"
 
             except json.JSONDecodeError:

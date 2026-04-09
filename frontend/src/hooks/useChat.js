@@ -117,5 +117,25 @@ export function useChat() {
     [sendMessage]
   )
 
-  return { messages, typing, showChips, sendMessage, firePrompt }
+  const addUserMessage = useCallback((text) => {
+    if (busy.current || !text.trim()) return
+    setShowChips(false)
+    setMessages((prev) => [...prev, {
+      id: `u-${Date.now()}`,
+      role: 'user',
+      time: nowTime(),
+      content: text.trim(),
+    }])
+  }, [])
+
+  const addAgentMessage = useCallback((html) => {
+    setMessages((prev) => [...prev, {
+      id: `a-${Date.now()}`,
+      role: 'agent',
+      time: nowTime(),
+      content: html,
+    }])
+  }, [])
+
+  return { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage }
 }
