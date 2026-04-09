@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useChat } from './hooks/useChat'
 import Header from './components/Header/Header'
 import ChatArea from './components/Chat/ChatArea'
@@ -40,17 +40,21 @@ const CF_RESPONSE = `
 export default function App() {
   const [page, setPage] = useState('chat')
   const [dashView, setDashView] = useState('geopolitical')
+  const firedSkills = useRef({ geo: false, cf: false })
   const { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage } = useChat()
 
   const handleSend = useCallback((text) => {
-    if (CF_RE.test(text)) {
+    // First time a skill topic is mentioned → instant canned response + dashboard
+    if (CF_RE.test(text) && !firedSkills.current.cf) {
+      firedSkills.current.cf = true
       addUserMessage(text)
       setDashView('counterfactual')
       setTimeout(() => {
         addAgentMessage(CF_RESPONSE)
         setTimeout(() => setPage('dash'), 1200)
       }, 800)
-    } else if (GEO_RE.test(text)) {
+    } else if (GEO_RE.test(text) && !firedSkills.current.geo) {
+      firedSkills.current.geo = true
       addUserMessage(text)
       setDashView('geopolitical')
       setTimeout(() => {
@@ -58,6 +62,7 @@ export default function App() {
         setTimeout(() => setPage('dash'), 1200)
       }, 800)
     } else {
+      // All follow-up questions go through Claude with conversation history
       sendMessage(text)
     }
   }, [sendMessage, addUserMessage, addAgentMessage])
