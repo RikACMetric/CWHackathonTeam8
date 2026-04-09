@@ -6,8 +6,9 @@ import Dashboard from './components/Dashboard/Dashboard'
 import Sidebar from "./components/Sidebar/Sidebar";
 import Login from './components/Login/Login'
 
-const GEO_RE = /\b(iran|oil|fuel|brent|crude|geopolit|ceasefire|conflict|war|sanction|escalat)/i
+const GEO_RE = /\b(iran|oil|fuel|brent|crude|geopolit|ceasefire|conflict|war|sanction)/i
 const CF_RE = /\b(what if|what would|counterfactual|reroute|had we|would have|if we had|alternative)/i
+const ESC_RE = /\b(cascade|escalat|tier.?\d|response.?protocol|risk.?matrix|force.?majeure|ground.?handl|labour.?action|sla.?breach)/i
 
 const GEO_RESPONSE = `
 <p>I've run the geopolitical impact analysis. <strong>Check the Dashboard tab</strong> for the full breakdown.</p>
@@ -38,14 +39,39 @@ const CF_RESPONSE = `
 </div>
 `
 
+const ESC_RESPONSE = `
+<p>I've run the escalation analysis. <strong>Check the Dashboard tab</strong> for the full cascade timeline, risk matrix, and response protocol.</p>
+<p>Here's the situation:</p>
+<p>FRA–PVG has been in a <strong>6-week compounding disruption cascade</strong>. What started as ground-handling SLA misses has escalated to force majeure — PVG handler has no confirmed support for the next 8 rotations.</p>
+<ul>
+  <li>Lane margin: <strong class="c-bad">+2.1%</strong> (down from +8.4%)</li>
+  <li>Disruption cost: <strong class="c-bad">€440K</strong> cumulative</li>
+  <li>Customer revenue at risk: <strong class="c-bad">€3.1M</strong> annually</li>
+  <li>Projected margin by W10: <strong class="c-bad">−4.2%</strong> if unresolved</li>
+</ul>
+<div class="conf-note"><strong>Worst case:</strong> If all risks materialise — €4.8M annualised impact across the PVG network.</div>
+<div class="rec-card">
+  <div class="rec-num">IMMEDIATE ACTION</div>
+  <div class="rec-detail">Activate Swissport PVG standby contract (€45K), direct outreach to #2 pharma customer with SLA credits, and reroute 3 of next 8 rotations via AMS–PVG. Board approval needed for €150K emergency spend.</div>
+</div>
+`
+
 export default function App() {
   const [page, setPage] = useState('login')
   const [dashView, setDashView] = useState('geopolitical')
-  const firedSkills = useRef({ geo: false, cf: false })
+  const firedSkills = useRef({ geo: false, cf: false, esc: false })
   const { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage } = useChat()
 
   const handleSend = useCallback((text) => {
-    if (CF_RE.test(text) && !firedSkills.current.cf) {
+    if (ESC_RE.test(text) && !firedSkills.current.esc) {
+      firedSkills.current.esc = true
+      addUserMessage(text)
+      setDashView('escalation')
+      setTimeout(() => {
+        addAgentMessage(ESC_RESPONSE)
+        setTimeout(() => setPage('dash'), 1200)
+      }, 800)
+    } else if (CF_RE.test(text) && !firedSkills.current.cf) {
       firedSkills.current.cf = true
       addUserMessage(text)
       setDashView('counterfactual')
