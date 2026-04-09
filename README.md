@@ -22,6 +22,10 @@ The project currently includes a small Python starter (`hello.py`) and tests (`t
 python -m unittest
 ```
 
+## Random Fact
+
+A group of flamingos is called a "flamboyance."
+
 ---
 
 *ADC Collective Week — hackathon / collaboration sprint for the collective.*

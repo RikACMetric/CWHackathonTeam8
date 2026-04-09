@@ -1,5 +1,4 @@
 import { useState, useRef, useCallback } from 'react'
-import { getResponse } from '../data/responses'
 
 function nowTime() {
   return new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
@@ -42,19 +41,34 @@ export function useChat() {
     setMessages((prev) => [...prev, userMsg])
     setTyping(true)
 
-    const delay = 1400 + Math.random() * 700
-    setTimeout(() => {
-      const html = getResponse(text)
-      const agentMsg = {
-        id: `a-${Date.now()}`,
-        role: 'agent',
-        time: nowTime(),
-        content: html,
-      }
-      setTyping(false)
-      setMessages((prev) => [...prev, agentMsg])
-      busy.current = false
-    }, delay)
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const agentMsg = {
+          id: `a-${Date.now()}`,
+          role: 'agent',
+          time: nowTime(),
+          content: data.reply || data.error || 'No response',
+        }
+        setTyping(false)
+        setMessages((prev) => [...prev, agentMsg])
+        busy.current = false
+      })
+      .catch((err) => {
+        const errMsg = {
+          id: `a-${Date.now()}`,
+          role: 'agent',
+          time: nowTime(),
+          content: `Error: ${err.message}`,
+        }
+        setTyping(false)
+        setMessages((prev) => [...prev, errMsg])
+        busy.current = false
+      })
   }, [])
 
   const firePrompt = useCallback(
