@@ -2,13 +2,16 @@ header {
   position: relative;
   z-index: 10;
   height: 58px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: rgba(249, 249, 247, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--outline-ghost);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 24px;
   flex-shrink: 0;
+  box-shadow: var(--shadow-ambient);
 }
 
 .logo {
@@ -27,17 +30,21 @@ header {
   line-height: 1;
 }
 .logo-name {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-weight: 800;
   font-size: 17px;
-  color: var(--gold);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-fixed-dim) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 .logo-tag {
-  font-family: 'DM Mono', monospace;
+  font-family: 'Manrope', sans-serif;
   font-size: 9px;
+  font-weight: 600;
   color: var(--text-dim);
-  letter-spacing: 1.5px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   margin-top: 2px;
 }
@@ -50,51 +57,55 @@ header {
 .pulse-dot {
   width: 6px;
   height: 6px;
-  background: var(--ok);
+  background: var(--primary-container);
   border-radius: 50%;
   animation: pulse-anim 2.4s ease-in-out infinite;
 }
 .status-txt {
-  font-family: 'DM Mono', monospace;
+  font-family: 'Manrope', sans-serif;
   font-size: 11px;
+  font-weight: 500;
   color: var(--text-muted);
-  letter-spacing: 0.3px;
+  letter-spacing: 0.02em;
 }
 .status-txt em {
-  color: var(--ok);
+  color: var(--primary);
   font-style: normal;
+  font-weight: 600;
 }
 
 .user-chip {
   display: flex;
   align-items: center;
   gap: 9px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 30px;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-ghost);
+  border-radius: var(--radius-pill);
   padding: 5px 14px 5px 5px;
 }
 .user-ava {
   width: 28px;
   height: 28px;
-  background: var(--gold);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-fixed-dim) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-weight: 700;
   font-size: 11px;
-  color: #060b14;
+  color: #ffffff;
 }
 .user-info .name {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.2;
 }
 .user-info .role {
-  font-family: 'DM Mono', monospace;
+  font-family: 'Manrope', sans-serif;
   font-size: 10px;
+  font-weight: 500;
   color: var(--text-muted);
-  letter-spacing: 0.2px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
