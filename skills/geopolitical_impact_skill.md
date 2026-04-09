@@ -77,9 +77,22 @@ The shock‑impact engine:
 
 ---
 
-## 5. Why this belongs in the harness
+## 5. Linked Skill: Counterfactual Analysis
+
+This skill is designed to **hand off** to the Counterfactual Analysis skill. After presenting the geopolitical impact or ceasefire shock scenario, the agent suggests follow-up counterfactual questions such as:
+
+- *"What if we had hedged 70% of fuel at $85/bbl before the Iran escalation?"*
+- *"What if we had shifted AMS–DXB volume to AMS–NBO before oil prices rose?"*
+- *"What if we had suspended CDG–JFK three months ago?"*
+
+This creates a **natural analytical flow**: diagnose the external shock → model alternative decisions that could have mitigated or avoided the impact. The counterfactual skill in turn links back to geopolitical analysis, so the user can re-examine macro context at any point.
+
+---
+
+## 6. Why this belongs in the harness
 
 - Connects **external macroeconomic signals** (oil price, geopolitical risk) to **internal operational impact** (fuel cost, margin, route viability).
 - Encodes **causal relationships**: oil price → fuel cost → margin by route, filtered by contract terms and hedging position.
 - Provides **scenario planning** capability: "what happens if X gets worse" — a question every SVP asks during geopolitical disruptions.
 - Delivers the answer in **one question from Noor**, with a clear dashboard and actionable recommendations.
+- **Cross-skill linkage** ensures the agent doesn't just report problems — it naturally guides Noor from diagnosis to "what could we have done differently?" (counterfactual) to "what should we do next?" (recommendations).

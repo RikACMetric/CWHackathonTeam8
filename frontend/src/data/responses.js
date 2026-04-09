@@ -447,7 +447,16 @@ function oilPriceImpactAnalysis() {
   <div class="rec-detail">DHL renewal is Q3 — but given the geopolitical context, an early renegotiation request is defensible. Target: raise cap to $105/bbl or switch to index-linked surcharge. Zara is already in discussions.</div>
 </div>
 
-<div class="conf-note"><strong>Confidence: Medium-High.</strong> Fuel cost impact is based on live procurement data and confirmed contract rates. Margin impact by route is directly computed from sector length and flight frequency. Surcharge cap exposure is from the commercial contracts database. Oil price trajectory is based on current spot — future movement is inherently uncertain.</div>`
+<div class="conf-note"><strong>Confidence: Medium-High.</strong> Fuel cost impact is based on live procurement data and confirmed contract rates. Margin impact by route is directly computed from sector length and flight frequency. Surcharge cap exposure is from the commercial contracts database. Oil price trajectory is based on current spot — future movement is inherently uncertain.</div>
+
+<div class="skill-link">
+  <p><strong>Related skill:</strong> <span class="tag tag-info">Counterfactual Analysis</span></p>
+  <p>Want to model what would have happened if TopFlight had locked in fuel hedging earlier — or rerouted Gulf-exposed cargo before the price spike? Try asking:</p>
+  <ul>
+    <li><em>"What if we had hedged 70% of fuel at $85/bbl before the Iran escalation?"</em></li>
+    <li><em>"What if we had shifted AMS–DXB volume to AMS–NBO before oil prices rose?"</em></li>
+  </ul>
+</div>`
 }
 
 function ceasefireShockAnalysis() {
@@ -517,7 +526,16 @@ function ceasefireShockAnalysis() {
   <div class="rec-detail">Currently 40% hedged. Locking in at $97/bbl now limits downside. If oil reaches $120/bbl, the unhedged 60% adds €1.7M in quarterly cost. At 70% hedged, that exposure drops to €690K — a €1M/quarter difference.</div>
 </div>
 
-<div class="conf-note"><strong>Confidence: Medium.</strong> Current fuel data is from live procurement; high confidence. Oil price projections under ceasefire collapse are based on analyst consensus (Goldman Sachs, IEA, Platts) and the 2019 Hormuz crisis analogue — directionally reliable but the magnitude range ($115–125) reflects genuine uncertainty. Insurance premium estimates are from TopFlight's insurer indicative quotes for elevated Gulf risk. AMS–DXB competitive response from Emirates is a judgement call based on their 2019 behaviour pattern.</div>`
+<div class="conf-note"><strong>Confidence: Medium.</strong> Current fuel data is from live procurement; high confidence. Oil price projections under ceasefire collapse are based on analyst consensus (Goldman Sachs, IEA, Platts) and the 2019 Hormuz crisis analogue — directionally reliable but the magnitude range ($115–125) reflects genuine uncertainty. Insurance premium estimates are from TopFlight's insurer indicative quotes for elevated Gulf risk. AMS–DXB competitive response from Emirates is a judgement call based on their 2019 behaviour pattern.</div>
+
+<div class="skill-link">
+  <p><strong>Related skill:</strong> <span class="tag tag-info">Counterfactual Analysis</span></p>
+  <p>Want to explore alternative scenarios? I can model what would happen if TopFlight had taken pre-emptive action before the escalation — or test proposed contingency moves before committing:</p>
+  <ul>
+    <li><em>"What if we had suspended CDG–JFK three months ago?"</em></li>
+    <li><em>"What if we reroute AMS–DXB cargo via AMS–NBO for the next quarter?"</em></li>
+  </ul>
+</div>`
 }
 
 // ─── Skill: Counterfactual Analysis ───────────────────────────────────────
@@ -525,6 +543,7 @@ function counterfactualAnalysis(_q) {
   return `
 <h4>Counterfactual Analysis — Extra Friday Capacity on AMS–DXB (Q1)</h4>
 <p><span class="tag tag-info">SKILL: Historical Counterfactual</span> &nbsp; Replaying Q1 with an alternative operational decision to estimate impact.</p>
+<p class="c-mute"><strong>Geopolitical context:</strong> This analysis accounts for the current oil-price environment (Brent at $97/bbl). Under the ceasefire-collapse scenario ($115–125/bbl), the margin uplift from extra Friday capacity would be partially offset by higher fuel costs — but reduced disruption savings would still hold.</p>
 
 <h4>Scenario</h4>
 <table class="dtable">
@@ -564,7 +583,16 @@ function counterfactualAnalysis(_q) {
   <div class="rec-detail">Track: load factor, margin, disruption cost, and OTP for time-critical product versus the same period last year. If results confirm the counterfactual estimate, scale to AMS–JFK and FRA–DXB which show similar Friday overflow patterns.</div>
 </div>
 
-<div class="conf-note"><strong>Confidence: Medium.</strong> Based on replaying 13 weeks of actual data with a single variable change. Supported by similar historical patterns on AMS–JFK and FRA–DXB. Remaining uncertainty is driven by weather-related disruptions (not modelled in the intervention) and competitive capacity responses from Gulf carriers.</div>`
+<div class="conf-note"><strong>Confidence: Medium.</strong> Based on replaying 13 weeks of actual data with a single variable change. Supported by similar historical patterns on AMS–JFK and FRA–DXB. Remaining uncertainty is driven by weather-related disruptions (not modelled in the intervention) and competitive capacity responses from Gulf carriers.</div>
+
+<div class="skill-link">
+  <p><strong>Related skill:</strong> <span class="tag tag-warn">Geopolitical Shock Analysis</span></p>
+  <p>This counterfactual was modelled at current fuel prices ($97/bbl). Want to see how the result changes under a ceasefire-collapse scenario — or check the current oil price impact across all routes?</p>
+  <ul>
+    <li><em>"How are rising oil prices impacting our margins?"</em></li>
+    <li><em>"What if the ceasefire falls through?"</em></li>
+  </ul>
+</div>`
 }
 
 function fallback(q) {
