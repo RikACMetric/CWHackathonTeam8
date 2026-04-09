@@ -137,5 +137,8 @@ export function useChat() {
     }])
   }, [])
 
-  return { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage }
+  const showThinking = useCallback(() => setTyping(true), [])
+  const hideThinking = useCallback(() => setTyping(false), [])
+
+  return { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage, showThinking, hideThinking }
 }

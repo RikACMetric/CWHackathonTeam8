@@ -88,52 +88,59 @@ export default function App() {
   const [dashView, setDashView] = useState(null)
   const [showYoY, setShowYoY] = useState(false)
   const firedSkills = useRef({ geo: false, cf: false, esc: false, yoy: false, csuite: false })
-  const { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage } = useChat()
+  const { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage, showThinking, hideThinking } = useChat()
+
+  // Helper: show thinking for 5s, then run callback
+  const withThinking = useCallback((fn) => {
+    showThinking()
+    setTimeout(() => {
+      hideThinking()
+      fn()
+    }, 5000)
+  }, [showThinking, hideThinking])
 
   const handleSend = useCallback((text) => {
     // C-suite summary — stays in chat, no dashboard switch
     if (CSUITE_RE.test(text) && !firedSkills.current.csuite) {
       firedSkills.current.csuite = true
       addUserMessage(text)
-      setTimeout(() => {
-        addAgentMessage(CSUITE_RESPONSE)
-      }, 800)
+      withThinking(() => addAgentMessage(CSUITE_RESPONSE))
     }
     // YoY follow-up — updates existing dashboard
     else if (YOY_RE.test(text) && !firedSkills.current.yoy) {
       firedSkills.current.yoy = true
       addUserMessage(text)
       setShowYoY(true)
-      setTimeout(() => {
+      withThinking(() => {
         addAgentMessage(YOY_RESPONSE)
         setTimeout(() => setPage('dash'), 1200)
-      }, 800)
+      })
     }
     // First-time skill triggers
     else if (ESC_RE.test(text) && !firedSkills.current.esc) {
       firedSkills.current.esc = true
       addUserMessage(text)
       setDashView('escalation')
-      setTimeout(() => {
+      withThinking(() => {
         addAgentMessage(ESC_RESPONSE)
         setTimeout(() => setPage('dash'), 1200)
-      }, 800)
+      })
     } else if (CF_RE.test(text) && !firedSkills.current.cf) {
       firedSkills.current.cf = true
       addUserMessage(text)
       setDashView('counterfactual')
-      setTimeout(() => {
+      withThinking(() => {
         addAgentMessage(CF_RESPONSE)
         setTimeout(() => setPage('dash'), 1200)
-      }, 800)
+      })
     } else if (GEO_RE.test(text) && !firedSkills.current.geo) {
       firedSkills.current.geo = true
       addUserMessage(text)
       setDashView('geopolitical')
-      setTimeout(() => {
+      withThinking(() => {
         addAgentMessage(GEO_RESPONSE)
         setTimeout(() => setPage('dash'), 1200)
-      }, 800)
+      })
     } else {
       // All other questions — use local response engine (no Claude CLI, no thinking)
       sendMessage(text, { useLocalResponse: true })
