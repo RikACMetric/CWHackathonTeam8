@@ -1,8 +1,8 @@
 const CHIPS = [
-  { icon: 'trending', label: 'Fleet Utilization Report' },
-  { icon: 'warn', label: 'Predictive Maintenance Alerts' },
-  { icon: 'eco', label: 'Carbon Emission Analysis' },
-  { icon: 'ship', label: 'Transit Delays by Hub' },
+  { icon: 'eco', label: 'What is working?' },
+  { icon: 'warn', label: 'What is not working well?' },
+  { icon: 'trending', label: 'Where to invest next?' },
+  { icon: 'ship', label: 'What to stop?' },
 ]
 
 function ChipIcon({ name }) {
