@@ -11,6 +11,7 @@ const CF_RE = /\b(what if|what would|counterfactual|reroute|had we|would have|if
 const ESC_RE = /\b(cascade|escalat|tier.?\d|response.?protocol|risk.?matrix|force.?majeure|ground.?handl|labour.?action|sla.?breach)/i
 const YOY_RE = /\b(last year|year.on.year|yoy|compar|previous year|vs.?\s*\d{4}|historical)/i
 const CSUITE_RE = /\b(c.?suite|exec|board|brief|summary for|ceo|cfo|leadership|stakeholder|management summary)/i
+const SAVE_SKILL_RE = /\b(save.*(skill|analysis|workflow)|add.*(skill|to skills)|summari[sz]e.*thinking|capture.*skill|create.*skill|make.*skill)/i
 
 const GEO_RESPONSE = `
 <p>I've run the geopolitical impact analysis. <strong>Check the Dashboard tab</strong> for the full breakdown.</p>
@@ -83,11 +84,22 @@ const CSUITE_RESPONSE = `
 <div class="conf-note"><strong>Confidence: High</strong> on financial data and route metrics. Medium on ceasefire scenario (analyst consensus + 2019 Hormuz analogue).</div>
 `
 
+const SAVE_SKILL_RESPONSE = `
+<p>I've captured this line of thinking as a reusable skill. <strong>Check the sidebar</strong> — it's now available under Skills.</p>
+<div class="rec-card" style="border-left: 3px solid var(--primary);">
+  <div class="rec-num">NEW SKILL SAVED</div>
+  <div class="rec-title" style="font-size: 13px; margin-bottom: 4px;">Iran Oil Shock — YoY Scenario Analysis</div>
+  <div class="rec-detail">Analyses geopolitical fuel cost impact with year-on-year comparison, ceasefire collapse modelling, and route-level exposure. Includes 3-scenario projection and board-ready recommendations.</div>
+</div>
+<p>This skill combines the Iran impact analysis with the YoY comparison into a single reusable workflow. You or your team can trigger it from the sidebar or by asking about oil shock scenarios.</p>
+`
+
 export default function App() {
   const [page, setPage] = useState('login')
   const [dashView, setDashView] = useState(null)
   const [showYoY, setShowYoY] = useState(false)
-  const firedSkills = useRef({ geo: false, cf: false, esc: false, yoy: false, csuite: false })
+  const [customSkills, setCustomSkills] = useState([])
+  const firedSkills = useRef({ geo: false, cf: false, esc: false, yoy: false, csuite: false, save: false })
   const { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage, showThinking, hideThinking } = useChat()
 
   // Helper: show thinking for 5s, then run callback
@@ -141,6 +153,21 @@ export default function App() {
         addAgentMessage(GEO_RESPONSE)
         setTimeout(() => setPage('dash'), 1200)
       })
+    }
+    // Save current analysis as a reusable skill
+    else if (SAVE_SKILL_RE.test(text) && !firedSkills.current.save) {
+      firedSkills.current.save = true
+      addUserMessage(text)
+      withThinking(() => {
+        addAgentMessage(SAVE_SKILL_RESPONSE)
+        setCustomSkills((prev) => [...prev, {
+          id: `custom-${Date.now()}`,
+          name: 'Iran Oil Shock — YoY Scenario',
+          icon: '⚡',
+          desc: 'Geopolitical fuel impact + YoY comparison + ceasefire modelling',
+          custom: true,
+        }])
+      })
     } else {
       // All other questions — use local response engine (no Claude CLI, no thinking)
       sendMessage(text, { useLocalResponse: true })
@@ -160,7 +187,7 @@ export default function App() {
     <>
       <Header page={page} setPage={setPage} />
       <div className="main">
-        <Sidebar firePrompt={handleSidebarPrompt} />
+        <Sidebar firePrompt={handleSidebarPrompt} customSkills={customSkills} />
         {page === 'dash' ? (
           <Dashboard view={dashView} showYoY={showYoY} />
         ) : (
