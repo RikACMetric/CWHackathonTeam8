@@ -1,6 +1,6 @@
 import './Header.css'
 
-export default function Header({ page, onShowChat, onShowCF }) {
+export default function Header({ page, setPage }) {
   return (
     <header>
       <div className="logo">
@@ -31,8 +31,8 @@ export default function Header({ page, onShowChat, onShowCF }) {
       </div>
 
       <div className="header-nav">
-        <button className={`nav-btn${page !== 'cf' ? ' active' : ''}`} onClick={onShowChat}>Chat</button>
-        <button className={`nav-btn${page === 'cf' ? ' active' : ''}`} onClick={onShowCF}>Counterfactual</button>
+        <button className={`nav-btn${page === 'chat' ? ' active' : ''}`} onClick={() => setPage('chat')}>Chat</button>
+        <button className={`nav-btn${page === 'dash' ? ' active' : ''}`} onClick={() => setPage('dash')}>Dashboard</button>
       </div>
 
       <div className="user-chip">

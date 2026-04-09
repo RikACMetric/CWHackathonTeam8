@@ -32,12 +32,27 @@ export const SKILLS = [
     description:
       'Analyse how the Iran conflict, rising oil prices, and potential ceasefire collapse affect fuel costs, route margins, and customer contracts.',
     triggers:
-      /\b(iran|oil price|oil.?prices|fuel cost|fuel price|geopolit|war|conflict|ceasefire|escalat|brent|crude|sanctions|strait.?of.?hormuz|gulf.?crisis|shock.?impact|shock.?analysis)\b/i,
+      /\b(iran|oil price|oil.?prices|fuel cost|fuel price|geopolit|war|conflict|ceasefire|brent|crude|sanctions|strait.?of.?hormuz|gulf.?crisis|shock.?impact|shock.?analysis)\b/i,
     responseFn: 'geopoliticalImpact',
     exampleQuestions: [
       'How is the Iran situation affecting our fuel costs?',
       'What happens to margins if oil hits $120?',
       'What if the ceasefire falls through?',
+    ],
+  },
+  {
+    id: 'escalation',
+    file: 'escalation_skill.md',
+    name: 'Cascade Failure Escalation Analysis',
+    description:
+      'Analyse cascade failure scenarios on routes with compounding disruptions, showing week-by-week escalation, risk matrix, and tiered response protocols.',
+    triggers:
+      /\b(cascade|escalat|tier.?\d.?response|response.?protocol|risk.?matrix|force.?majeure|ground.?handl|labour.?action|sla.?breach|compounding.?disrupt)\b/i,
+    responseFn: 'escalation',
+    exampleQuestions: [
+      'Show me the FRA-PVG cascade failure escalation',
+      'What does the risk matrix look like for FRA-PVG?',
+      'What are the tiered response actions for the FRA-PVG crisis?',
     ],
   },
 ]
