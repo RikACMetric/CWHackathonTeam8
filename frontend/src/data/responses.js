@@ -713,7 +713,7 @@ export const DOMAINS = [
   {
     icon: '✈',
     label: 'Route Performance',
-    badge: { text: '3', type: 'warn' },
+    badge: null,
     prompt: 'Give me a full route performance overview across the network',
   },
   {
@@ -725,7 +725,7 @@ export const DOMAINS = [
   {
     icon: '⚠',
     label: 'Disruptions',
-    badge: { text: '5', type: 'bad' },
+    badge: null,
     prompt: 'What are the main disruption events this month and what did they cost us?',
   },
   {
