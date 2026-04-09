@@ -9,6 +9,7 @@ import Login from './components/Login/Login'
 const GEO_RE = /\b(iran|oil|fuel|brent|crude|geopolit|ceasefire|conflict|war|sanction)/i
 const CF_RE = /\b(what if|what would|counterfactual|reroute|had we|would have|if we had|alternative)/i
 const ESC_RE = /\b(cascade|escalat|tier.?\d|response.?protocol|risk.?matrix|force.?majeure|ground.?handl|labour.?action|sla.?breach)/i
+const YOY_RE = /\b(last year|year.on.year|yoy|compar|previous year|vs.?\s*\d{4}|historical)/i
 
 const GEO_RESPONSE = `
 <p>I've run the geopolitical impact analysis. <strong>Check the Dashboard tab</strong> for the full breakdown.</p>
@@ -56,14 +57,34 @@ const ESC_RESPONSE = `
 </div>
 `
 
+const YOY_RESPONSE = `
+<p>I've added the year-on-year comparison to the Dashboard. <strong>Check the Dashboard tab</strong> — scroll down for the new charts.</p>
+<p>Here's the headline:</p>
+<p>Compared to Q1 last year, fuel costs are up <strong class="c-bad">+€2.4M</strong> and network margin has eroded by <strong class="c-bad">−3.1pp</strong> (21.1% → 18.5%). Last year Brent averaged $74/bbl — this year it's $90/bbl, a <strong class="c-warn">31% increase</strong> driven entirely by the Iran escalation.</p>
+<p>Last year's Q1 was operationally stable — no geopolitical shocks, margins held flat within 0.5pp of plan. This year's divergence started in W3 and has widened every week since.</p>
+<div class="conf-note"><strong>Key insight:</strong> The margin gap is accelerating. If current trends hold, Q2 will be −4.5pp below last year — the worst YoY deterioration since 2019.</div>
+`
+
 export default function App() {
   const [page, setPage] = useState('login')
-  const [dashView, setDashView] = useState('geopolitical')
-  const firedSkills = useRef({ geo: false, cf: false, esc: false })
+  const [dashView, setDashView] = useState(null)
+  const [showYoY, setShowYoY] = useState(false)
+  const firedSkills = useRef({ geo: false, cf: false, esc: false, yoy: false })
   const { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage } = useChat()
 
   const handleSend = useCallback((text) => {
-    if (ESC_RE.test(text) && !firedSkills.current.esc) {
+    // YoY follow-up — updates existing dashboard
+    if (YOY_RE.test(text) && !firedSkills.current.yoy) {
+      firedSkills.current.yoy = true
+      addUserMessage(text)
+      setShowYoY(true)
+      setTimeout(() => {
+        addAgentMessage(YOY_RESPONSE)
+        setTimeout(() => setPage('dash'), 1200)
+      }, 800)
+    }
+    // First-time skill triggers
+    else if (ESC_RE.test(text) && !firedSkills.current.esc) {
       firedSkills.current.esc = true
       addUserMessage(text)
       setDashView('escalation')
@@ -88,7 +109,8 @@ export default function App() {
         setTimeout(() => setPage('dash'), 1200)
       }, 800)
     } else {
-      sendMessage(text)
+      // All other questions — use local response engine (no Claude CLI, no thinking)
+      sendMessage(text, { useLocalResponse: true })
     }
   }, [sendMessage, addUserMessage, addAgentMessage])
 
@@ -102,7 +124,7 @@ export default function App() {
       <div className="main">
         <Sidebar firePrompt={firePrompt} />
         {page === 'dash' ? (
-          <Dashboard view={dashView} />
+          <Dashboard view={dashView} showYoY={showYoY} />
         ) : (
           <ChatArea
             messages={messages}
