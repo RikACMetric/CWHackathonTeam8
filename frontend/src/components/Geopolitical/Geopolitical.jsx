@@ -2,7 +2,7 @@ import {
   AreaChart, Area, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine,
 } from 'recharts'
-import { oilTimeSeries, scenarioData, routeExposure, summary } from '../../data/geopolitical'
+import { oilTimeSeries, scenarioData, routeExposure, summary, yoyComparison, yoySummary } from '../../data/geopolitical'
 import './Geopolitical.css'
 
 const BAD = '#ba1a1a'
@@ -25,7 +25,9 @@ function Tip({ active, payload, label }) {
   )
 }
 
-export default function Geopolitical() {
+const INFO = '#2563eb'
+
+export default function Geopolitical({ showYoY }) {
   const s = summary
   return (
     <div className="geo-page">
@@ -121,6 +123,52 @@ export default function Geopolitical() {
           </table>
         </div>
       </div>
+
+      {showYoY && (
+        <>
+          <div className="geo-yoy-banner">
+            <h3>Year-on-Year Comparison — Q1 2025 vs Q1 2026</h3>
+            <div className="geo-yoy-kpis">
+              <div className="geo-yoy-stat"><span className="geo-yoy-val bad">{yoySummary.fuelCostDelta}</span><span className="geo-yoy-lbl">fuel cost YoY</span></div>
+              <div className="geo-yoy-stat"><span className="geo-yoy-val bad">{yoySummary.marginDelta}</span><span className="geo-yoy-lbl">margin YoY</span></div>
+              <div className="geo-yoy-stat"><span className="geo-yoy-val warn">{yoySummary.brentDelta}</span><span className="geo-yoy-lbl">Brent YoY</span></div>
+            </div>
+          </div>
+          <div className="geo-charts">
+            <div className="geo-chart-card">
+              <div className="geo-chart-title">Fuel Cost — This Year vs Last Year (€K/week)</div>
+              <div className="geo-chart-sub">Last year's stable baseline vs this year's escalation</div>
+              <ResponsiveContainer width="100%" height={220}>
+                <AreaChart data={yoyComparison}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={GRD} />
+                  <XAxis dataKey="week" tick={{ fill: MUT, fontSize: 10 }} />
+                  <YAxis domain={[700, 1050]} tick={{ fill: MUT, fontSize: 10 }} />
+                  <Tooltip content={<Tip />} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Area type="monotone" dataKey="fuelCostThisYear" name="This year" stroke={BAD} fill={BAD} fillOpacity={.1} strokeWidth={2} />
+                  <Area type="monotone" dataKey="fuelCostLastYear" name="Last year" stroke={INFO} fill={INFO} fillOpacity={.08} strokeWidth={2} strokeDasharray="4 4" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="geo-chart-card">
+              <div className="geo-chart-title">Margin — This Year vs Last Year (%)</div>
+              <div className="geo-chart-sub">3.1pp average margin erosion driven by fuel cost escalation</div>
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={yoyComparison}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={GRD} />
+                  <XAxis dataKey="week" tick={{ fill: MUT, fontSize: 10 }} />
+                  <YAxis domain={[16, 23]} tick={{ fill: MUT, fontSize: 10 }} />
+                  <Tooltip content={<Tip />} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Line type="monotone" dataKey="marginThisYear" name="This year" stroke={BAD} strokeWidth={2.5} dot={{ r: 3 }} />
+                  <Line type="monotone" dataKey="marginLastYear" name="Last year" stroke={INFO} strokeWidth={2} dot={{ r: 3 }} strokeDasharray="4 4" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="geo-actions">
         <h4>Recommended Actions</h4>
