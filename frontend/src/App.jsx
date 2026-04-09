@@ -14,11 +14,16 @@ export default function App() {
     return <Login onLogin={() => setPage('chat')} />
   }
 
+  const handleSidebarPrompt = (prompt, opts) => {
+    setPage('chat')
+    firePrompt(prompt, opts)
+  }
+
   return (
     <>
       <Header page={page} onShowChat={() => setPage('chat')} onShowCF={() => setPage('cf')} />
       <div className="main">
-          <Sidebar firePrompt={firePrompt} />
+          <Sidebar firePrompt={handleSidebarPrompt} />
         {page === 'cf' ? (
           <Counterfactual />
         ) : (
