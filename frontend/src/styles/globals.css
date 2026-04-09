@@ -1,19 +1,19 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg:          #060b14;
-  --surface:     #0c1220;
-  --card:        #111a2e;
-  --card-hover:  #172036;
-  --border:      #1c2b44;
-  --border-dim:  #111927;
+  --bg:          #f4f6f9;
+  --surface:     #ffffff;
+  --card:        #f0f4f8;
+  --card-hover:  #e6ecf4;
+  --border:      #dce4ef;
+  --border-dim:  #eaeff6;
   --gold:        #D4A843;
   --gold-light:  #e6c060;
   --gold-dim:    rgba(212,168,67,.12);
   --gold-glow:   rgba(212,168,67,.25);
-  --text:        #dce8f5;
-  --text-muted:  #7a96b8;
-  --text-dim:    #384d65;
+  --text:        #1a2540;
+  --text-muted:  #5a7290;
+  --text-dim:    #94aec8;
   --ok:          #22c984;
   --warn:        #f5a623;
   --bad:         #f04060;
@@ -22,7 +22,7 @@
   --warn-dim:    rgba(245,166,35,.12);
   --bad-dim:     rgba(240,64,96,.12);
   --info-dim:    rgba(72,145,224,.12);
-  --scan-line:   repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.015) 2px, rgba(255,255,255,.015) 4px);
+  --scan-line:   none;
 }
 
 html, body { height: 100%; overflow: hidden; }
@@ -42,8 +42,8 @@ body::before {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(212,168,67,.06) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 60% at 5% 80%, rgba(72,145,224,.04) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(212,168,67,.03) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 5% 80%, rgba(72,145,224,.02) 0%, transparent 60%);
   z-index: 0;
 }
 
