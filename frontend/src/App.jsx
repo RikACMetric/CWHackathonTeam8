@@ -4,6 +4,7 @@ import Header from './components/Header/Header'
 import ChatArea from './components/Chat/ChatArea'
 import Dashboard from './components/Dashboard/Dashboard'
 import Sidebar from "./components/Sidebar/Sidebar";
+import Login from './components/Login/Login'
 
 const GEO_RE = /\b(iran|oil|fuel|brent|crude|geopolit|ceasefire|conflict|war|sanction|escalat)/i
 const CF_RE = /\b(what if|what would|counterfactual|reroute|had we|would have|if we had|alternative)/i
@@ -38,13 +39,12 @@ const CF_RESPONSE = `
 `
 
 export default function App() {
-  const [page, setPage] = useState('chat')
+  const [page, setPage] = useState('login')
   const [dashView, setDashView] = useState('geopolitical')
   const firedSkills = useRef({ geo: false, cf: false })
   const { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage } = useChat()
 
   const handleSend = useCallback((text) => {
-    // First time a skill topic is mentioned → instant canned response + dashboard
     if (CF_RE.test(text) && !firedSkills.current.cf) {
       firedSkills.current.cf = true
       addUserMessage(text)
@@ -62,10 +62,13 @@ export default function App() {
         setTimeout(() => setPage('dash'), 1200)
       }, 800)
     } else {
-      // All follow-up questions go through Claude with conversation history
       sendMessage(text)
     }
   }, [sendMessage, addUserMessage, addAgentMessage])
+
+  if (page === 'login') {
+    return <Login onLogin={() => setPage('chat')} />
+  }
 
   return (
     <>
