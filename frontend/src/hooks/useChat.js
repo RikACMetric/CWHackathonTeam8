@@ -41,32 +41,59 @@ export function useChat() {
     setMessages((prev) => [...prev, userMsg])
     setTyping(true)
 
+    const agentId = `a-${Date.now()}`
+
+    // Add a placeholder message that will be streamed into
+    setMessages((prev) => [...prev, { id: agentId, role: 'agent', time: nowTime(), content: '' }])
+    setTyping(false)
+
     fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: text }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        const agentMsg = {
-          id: `a-${Date.now()}`,
-          role: 'agent',
-          time: nowTime(),
-          content: data.reply || data.error || 'No response',
+      .then(async (res) => {
+        const reader = res.body.getReader()
+        const decoder = new TextDecoder()
+        let buffer = ''
+        let accumulated = ''
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          buffer = lines.pop() || ''
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue
+            try {
+              const event = JSON.parse(line.slice(6))
+              if (event.type === 'text') {
+                accumulated += event.content
+                setMessages((prev) =>
+                  prev.map((m) => m.id === agentId ? { ...m, content: accumulated } : m)
+                )
+              } else if (event.type === 'tool') {
+                accumulated += `\n<div class="conf-note"><strong>Using tool:</strong> ${event.tool}</div>\n`
+                setMessages((prev) =>
+                  prev.map((m) => m.id === agentId ? { ...m, content: accumulated } : m)
+                )
+              } else if (event.type === 'done') {
+                setMessages((prev) =>
+                  prev.map((m) => m.id === agentId ? { ...m, content: event.content || accumulated } : m)
+                )
+              }
+            } catch {}
+          }
         }
-        setTyping(false)
-        setMessages((prev) => [...prev, agentMsg])
         busy.current = false
       })
       .catch((err) => {
-        const errMsg = {
-          id: `a-${Date.now()}`,
-          role: 'agent',
-          time: nowTime(),
-          content: `Error: ${err.message}`,
-        }
-        setTyping(false)
-        setMessages((prev) => [...prev, errMsg])
+        setMessages((prev) =>
+          prev.map((m) => m.id === agentId ? { ...m, content: `Error: ${err.message}` } : m)
+        )
         busy.current = false
       })
   }, [])

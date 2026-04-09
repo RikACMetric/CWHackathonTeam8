@@ -1,0 +1,129 @@
+.cf-page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cf-header h2 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-fixed-dim) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.cf-subtitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.cf-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.cf-kpi {
+  background: var(--surface-elevated);
+  border: 1px solid var(--outline-ghost);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-ambient);
+}
+.cf-kpi-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.cf-kpi-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.cf-kpi-actual {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-decoration: line-through;
+  text-decoration-color: var(--bad);
+}
+.cf-kpi-cf {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.cf-kpi-delta {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+.cf-kpi-delta.positive { background: var(--ok-dim); color: var(--ok); }
+
+.cf-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.cf-chart-card {
+  background: var(--surface-elevated);
+  border: 1px solid var(--outline-ghost);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-ambient);
+}
+.cf-chart-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.cf-chart-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+.cf-action {
+  background: rgba(0,109,64,.04);
+  border: 1px solid rgba(0,109,64,.15);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+}
+.cf-action h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.cf-action p {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.cf-confidence {
+  display: inline-flex;
+  background: var(--info-dim);
+  border: 1px solid rgba(0,109,64,.2);
+  border-radius: 2px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+@media (max-width: 900px) {
+  .cf-charts { grid-template-columns: 1fr; }
+}

@@ -1,3 +1,11 @@
+import { matchSkill, listSkillSummaries } from './skills'
+
+// ─── Skill-based response dispatch ────────────────────────────────────────
+const SKILL_RESPONSES = {
+  counterfactual: counterfactualAnalysis,
+  geopoliticalImpact: geopoliticalImpact,
+}
+
 // ─── Response engine ───────────────────────────────────────────────────────
 export function getResponse(q) {
   const t = q.toLowerCase()
@@ -28,6 +36,12 @@ export function getResponse(q) {
     return revenue()
   if (/\b(margin drop|drop in margin|why.*margin|margin.*why|2\.1pp)\b/.test(t))
     return marginDrop()
+
+  // ── Skill-based matching ──────────────────────────────────────────────
+  const skill = matchSkill(q)
+  if (skill && SKILL_RESPONSES[skill.responseFn]) {
+    return SKILL_RESPONSES[skill.responseFn](q)
+  }
 
   return fallback(q)
 }
@@ -374,7 +388,215 @@ function marginDrop() {
 <div class="conf-note"><strong>Confidence: High for the FRA–PVG and CDG–JFK attribution.</strong> The AMS–DXB figure is a directional estimate — isolating the exact margin impact of Gulf carrier competition involves assumptions about counterfactual booking patterns that cannot be directly measured.</div>`
 }
 
+// ─── Skill: Geopolitical Shock & Oil Price Impact ─────────────────────────
+function geopoliticalImpact(q) {
+  const t = q.toLowerCase()
+  const isCeasefire = /ceasefire|fall.?through|collapse|escal|worse|shock|spike/.test(t)
+
+  if (isCeasefire) return ceasefireShockAnalysis()
+  return oilPriceImpactAnalysis()
+}
+
+function oilPriceImpactAnalysis() {
+  return `
+<h4>Geopolitical Impact — Iran Conflict & Rising Oil Prices</h4>
+<p><span class="tag tag-warn">SKILL: Geopolitical Shock Analysis</span> &nbsp; Assessing current oil price impact on TopFlight operations.</p>
+
+<h4>Oil Price Context</h4>
+<table class="dtable">
+  <thead><tr><th>Indicator</th><th>Pre-Escalation</th><th>Current</th><th>Change</th></tr></thead>
+  <tbody>
+    <tr><td>Brent Crude</td><td class="mono">$78/bbl</td><td class="c-bad mono">$97/bbl</td><td class="c-bad">↑ +24%</td></tr>
+    <tr><td>Jet Fuel Spot (NWE)</td><td class="mono">€0.58/kg</td><td class="c-bad mono">€0.72/kg</td><td class="c-bad">↑ +€0.14/kg</td></tr>
+    <tr><td>TopFlight Fuel Cost (Q1)</td><td class="mono">€7.2M (plan)</td><td class="c-bad mono">€9.0M (actual)</td><td class="c-bad">+€1.8M vs plan</td></tr>
+    <tr><td>Fuel as % of OpEx</td><td class="mono">31%</td><td class="c-bad mono">37%</td><td class="c-bad">↑ +6pp</td></tr>
+  </tbody>
+</table>
+
+<h4>Impact by Route — Fuel Cost Increase vs Plan</h4>
+<table class="dtable">
+  <thead><tr><th>Route</th><th>Sector Length</th><th>Extra Fuel Cost (Q1)</th><th>Margin Impact</th><th>New Margin</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">AMS–DXB</td><td>5,180 km</td><td class="c-bad mono">€480K</td><td class="c-bad">−2.8pp</td><td class="c-warn">+9.2%</td></tr>
+    <tr><td class="mono">CDG–BKK</td><td>9,450 km</td><td class="c-bad mono">€410K</td><td class="c-bad">−1.9pp</td><td>+16.8%</td></tr>
+    <tr><td class="mono">FRA–PVG</td><td>8,820 km</td><td class="c-bad mono">€380K</td><td class="c-bad">−1.2pp</td><td class="c-warn">+2.1%</td></tr>
+    <tr><td class="mono">LHR–ORD</td><td>6,320 km</td><td class="c-warn mono">€290K</td><td class="c-warn">−0.6pp</td><td class="c-ok">+24.1%</td></tr>
+    <tr><td class="mono">CDG–JFK</td><td>5,840 km</td><td class="c-warn mono">€160K</td><td class="c-bad">−0.8pp</td><td class="c-bad">−3.7%</td></tr>
+    <tr><td class="mono">AMS–NBO</td><td>6,580 km</td><td class="c-warn mono">€80K</td><td class="c-mute">−0.3pp</td><td class="c-ok">+21.4%</td></tr>
+    <tr style="border-top: 1px solid var(--border)"><td><strong>Network Total</strong></td><td></td><td class="c-bad mono"><strong>€1.8M</strong></td><td class="c-bad"><strong>−1.4pp</strong></td><td><strong>18.3%</strong></td></tr>
+  </tbody>
+</table>
+
+<h4>Customer Exposure — Fuel Surcharge Caps</h4>
+<ul>
+  <li><strong class="c-bad">DHL Express</strong> — fuel surcharge capped at $85/bbl in current contract. TopFlight absorbs 100% of cost above cap. Exposure: <strong class="c-bad">€210K/quarter</strong> at current prices. Contract renews Q3.</li>
+  <li><strong class="c-warn">Zara Logistics</strong> — surcharge cap at $90/bbl. Exposure: <strong class="c-warn">€95K/quarter</strong>. Currently in renegotiation.</li>
+  <li><strong class="c-ok">Maersk, DB Schenker, K+N</strong> — uncapped fuel surcharge pass-through. No margin leakage from oil prices on these accounts.</li>
+</ul>
+<p>In total, <strong>~18% of TopFlight revenue has capped fuel surcharges</strong> — limiting the ability to pass through oil price increases on those contracts.</p>
+
+<h4>Recommended Actions</h4>
+<div class="rec-card">
+  <div class="rec-num">IMMEDIATE · High confidence</div>
+  <div class="rec-title">Lock in Q2 fuel hedging at current rates ($97/bbl)</div>
+  <div class="rec-detail">Each $1/bbl increase above current levels adds ~€74K/quarter in unhedged exposure. TopFlight currently has only 40% of Q2 fuel hedged. Extending hedging coverage to 70% would cap downside at current margin levels.</div>
+</div>
+<div class="rec-card">
+  <div class="rec-num">WITHIN 2 WEEKS · Medium confidence</div>
+  <div class="rec-title">Renegotiate fuel surcharge caps with DHL Express and Zara Logistics</div>
+  <div class="rec-detail">DHL renewal is Q3 — but given the geopolitical context, an early renegotiation request is defensible. Target: raise cap to $105/bbl or switch to index-linked surcharge. Zara is already in discussions.</div>
+</div>
+
+<div class="conf-note"><strong>Confidence: Medium-High.</strong> Fuel cost impact is based on live procurement data and confirmed contract rates. Margin impact by route is directly computed from sector length and flight frequency. Surcharge cap exposure is from the commercial contracts database. Oil price trajectory is based on current spot — future movement is inherently uncertain.</div>
+
+<div class="skill-link">
+  <p><strong>Related skill:</strong> <span class="tag tag-info">Counterfactual Analysis</span></p>
+  <p>Want to model what would have happened if TopFlight had locked in fuel hedging earlier — or rerouted Gulf-exposed cargo before the price spike? Try asking:</p>
+  <ul>
+    <li><em>"What if we had hedged 70% of fuel at $85/bbl before the Iran escalation?"</em></li>
+    <li><em>"What if we had shifted AMS–DXB volume to AMS–NBO before oil prices rose?"</em></li>
+  </ul>
+</div>`
+}
+
+function ceasefireShockAnalysis() {
+  return `
+<h4>Shock Scenario — Iran Ceasefire Collapses</h4>
+<p><span class="tag tag-bad">SKILL: Geopolitical Shock Analysis</span> &nbsp; Modelling the impact if ceasefire negotiations fail and conflict escalates.</p>
+
+<h4>Scenario Assumptions</h4>
+<table class="dtable">
+  <thead><tr><th>Parameter</th><th>Current State</th><th>Shock Scenario</th></tr></thead>
+  <tbody>
+    <tr><td>Brent Crude</td><td class="mono">$97/bbl</td><td class="c-bad mono">$115–125/bbl</td></tr>
+    <tr><td>Jet Fuel Spot</td><td class="mono">€0.72/kg</td><td class="c-bad mono">€0.89–0.96/kg</td></tr>
+    <tr><td>Gulf Route Insurance</td><td class="mono">Standard</td><td class="c-bad">+40% war-risk premium</td></tr>
+    <tr><td>Strait of Hormuz</td><td class="c-warn">Elevated risk</td><td class="c-bad">Intermittent disruption</td></tr>
+    <tr><td>Duration Assumption</td><td>—</td><td>Sustained 8–12 weeks</td></tr>
+  </tbody>
+</table>
+<p class="c-mute">Scenario modelled from analyst consensus (Goldman Sachs, IEA) and historical analogue: 2019 Strait of Hormuz tanker attacks ($62→$72/bbl, +16% in 3 weeks).</p>
+
+<h4>Network Impact — Ceasefire Collapse</h4>
+<table class="dtable">
+  <thead><tr><th>Route</th><th>Current Margin</th><th>Shock Margin (low)</th><th>Shock Margin (high)</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">LHR–ORD</td><td class="c-ok">+24.1%</td><td class="c-ok">+21.8%</td><td class="c-ok">+20.5%</td><td><span class="tag tag-ok">RESILIENT</span></td></tr>
+    <tr><td class="mono">AMS–NBO</td><td class="c-ok">+21.4%</td><td class="c-ok">+19.1%</td><td>+17.8%</td><td><span class="tag tag-ok">RESILIENT</span></td></tr>
+    <tr><td class="mono">CDG–BKK</td><td>+16.8%</td><td>+12.4%</td><td class="c-warn">+10.1%</td><td><span class="tag tag-warn">STRESSED</span></td></tr>
+    <tr><td class="mono">AMS–DXB</td><td class="c-warn">+9.2%</td><td class="c-bad">+2.8%</td><td class="c-bad">+0.4%</td><td><span class="tag tag-bad">BREAK-EVEN RISK</span></td></tr>
+    <tr><td class="mono">FRA–PVG</td><td class="c-warn">+2.1%</td><td class="c-bad">−2.3%</td><td class="c-bad">−4.7%</td><td><span class="tag tag-bad">LOSS-MAKING</span></td></tr>
+    <tr><td class="mono">CDG–JFK</td><td class="c-bad">−3.7%</td><td class="c-bad">−5.4%</td><td class="c-bad">−7.1%</td><td><span class="tag tag-bad">ACCELERATED LOSS</span></td></tr>
+  </tbody>
+</table>
+
+<h4>Financial Impact Summary</h4>
+<table class="dtable">
+  <thead><tr><th>Metric</th><th>Current Trajectory</th><th>Ceasefire Collapse (mid-range)</th><th>Delta</th></tr></thead>
+  <tbody>
+    <tr><td>Additional Fuel Cost (quarterly)</td><td class="c-warn mono">€1.8M above plan</td><td class="c-bad mono">€4.4–5.2M above plan</td><td class="c-bad">+€2.6–3.4M</td></tr>
+    <tr><td>Network Margin</td><td class="c-warn">18.3%</td><td class="c-bad">14.8–15.9%</td><td class="c-bad">−2.4–3.5pp</td></tr>
+    <tr><td>Routes Below Break-Even</td><td class="c-bad">1 (CDG–JFK)</td><td class="c-bad">3 (+ AMS–DXB, FRA–PVG)</td><td class="c-bad">+2 routes</td></tr>
+    <tr><td>Insurance Premium Increase</td><td class="c-mute">—</td><td class="c-bad">+€340K/quarter (AMS–DXB)</td><td class="c-bad">Gulf routes only</td></tr>
+    <tr><td>Customer Revenue at Risk</td><td class="c-mute">—</td><td class="c-bad">€8.4M (capped surcharge accounts)</td><td class="c-bad">~18% of network revenue</td></tr>
+  </tbody>
+</table>
+
+<h4>Critical Risk: AMS–DXB</h4>
+<ul>
+  <li><strong>AMS–DXB is the most exposed route.</strong> It combines long Gulf sector, insurance premium exposure, and competitive pressure from Emirates SkyCargo (which has lower fuel cost basis).</li>
+  <li>At $120/bbl, AMS–DXB margin drops to approximately <strong class="c-bad">+1.6%</strong> — effectively break-even after overhead allocation.</li>
+  <li>If Emirates adds additional capacity in response to disruption (as they did during the 2019 Hormuz crisis), TopFlight's load factor could drop below 60%, pushing the route negative.</li>
+</ul>
+
+<h4>Contingency Recommendations</h4>
+<div class="rec-card">
+  <div class="rec-num">TRIGGER: Oil > $110/bbl for 4+ weeks</div>
+  <div class="rec-title">Activate CDG–JFK suspension protocol</div>
+  <div class="rec-detail">Pre-prepare suspension documentation now. If oil sustains above $110, CDG–JFK losses accelerate to €200K+/month. The route is already marginal — the oil shock removes any remaining case for continuation. Customer migration plan to partner carriers should be ready in advance.</div>
+</div>
+<div class="rec-card">
+  <div class="rec-num">TRIGGER: Gulf insurance premium > +30%</div>
+  <div class="rec-title">Implement emergency fuel + war-risk surcharge on AMS–DXB</div>
+  <div class="rec-detail">Contractually permissible under force majeure clauses for Maersk, DB Schenker, and K+N. DHL Express contract requires 30-day notice. Estimated recovery: €180K/quarter of the insurance cost increase.</div>
+</div>
+<div class="rec-card">
+  <div class="rec-num">IMMEDIATE · High confidence</div>
+  <div class="rec-title">Extend fuel hedging to 70% coverage for Q2–Q3</div>
+  <div class="rec-detail">Currently 40% hedged. Locking in at $97/bbl now limits downside. If oil reaches $120/bbl, the unhedged 60% adds €1.7M in quarterly cost. At 70% hedged, that exposure drops to €690K — a €1M/quarter difference.</div>
+</div>
+
+<div class="conf-note"><strong>Confidence: Medium.</strong> Current fuel data is from live procurement; high confidence. Oil price projections under ceasefire collapse are based on analyst consensus (Goldman Sachs, IEA, Platts) and the 2019 Hormuz crisis analogue — directionally reliable but the magnitude range ($115–125) reflects genuine uncertainty. Insurance premium estimates are from TopFlight's insurer indicative quotes for elevated Gulf risk. AMS–DXB competitive response from Emirates is a judgement call based on their 2019 behaviour pattern.</div>
+
+<div class="skill-link">
+  <p><strong>Related skill:</strong> <span class="tag tag-info">Counterfactual Analysis</span></p>
+  <p>Want to explore alternative scenarios? I can model what would happen if TopFlight had taken pre-emptive action before the escalation — or test proposed contingency moves before committing:</p>
+  <ul>
+    <li><em>"What if we had suspended CDG–JFK three months ago?"</em></li>
+    <li><em>"What if we reroute AMS–DXB cargo via AMS–NBO for the next quarter?"</em></li>
+  </ul>
+</div>`
+}
+
+// ─── Skill: Counterfactual Analysis ───────────────────────────────────────
+function counterfactualAnalysis(_q) {
+  return `
+<h4>Counterfactual Analysis — Extra Friday Capacity on AMS–DXB (Q1)</h4>
+<p><span class="tag tag-info">SKILL: Historical Counterfactual</span> &nbsp; Replaying Q1 with an alternative operational decision to estimate impact.</p>
+<p class="c-mute"><strong>Geopolitical context:</strong> This analysis accounts for the current oil-price environment (Brent at $97/bbl). Under the ceasefire-collapse scenario ($115–125/bbl), the margin uplift from extra Friday capacity would be partially offset by higher fuel costs — but reduced disruption savings would still hold.</p>
+
+<h4>Scenario</h4>
+<table class="dtable">
+  <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>Route</td><td class="mono">AMS–DXB</td></tr>
+    <tr><td>Period</td><td>Q1 2025 (13 Fridays)</td></tr>
+    <tr><td>Intervention</td><td>Add 1 extra wide-body cargo flight per Friday (+20% Friday capacity)</td></tr>
+    <tr><td>Method</td><td>Replay actual bookings, re-allocate rollovers, recompute financials</td></tr>
+  </tbody>
+</table>
+
+<h4>Estimated Impact vs Actuals</h4>
+<table class="dtable">
+  <thead><tr><th>Metric</th><th>Actual (Q1)</th><th>Counterfactual</th><th>Delta</th></tr></thead>
+  <tbody>
+    <tr><td>Lane Margin</td><td class="c-warn mono">+9.2%</td><td class="c-ok mono">+15.7%</td><td class="c-ok">+€420K (+6.5pp)</td></tr>
+    <tr><td>Disruption Cost</td><td class="c-warn mono">€180K</td><td class="c-ok mono">€70K</td><td class="c-ok">−€110K (−61%)</td></tr>
+    <tr><td>Friday Load Factor</td><td class="c-warn">69%</td><td class="c-ok">81%</td><td class="c-ok">+12pp</td></tr>
+    <tr><td>OTP (time-critical)</td><td class="c-warn">87.1%</td><td class="c-ok">91.3%</td><td class="c-ok">+4.2pp</td></tr>
+    <tr><td>Rollover Events</td><td class="c-bad">38 events</td><td class="c-ok">7 events</td><td class="c-ok">−82%</td></tr>
+  </tbody>
+</table>
+
+<h4>How This Was Computed</h4>
+<ul>
+  <li><strong>Baseline reconstruction:</strong> Loaded all Q1 AMS–DXB bookings by product and departure day — actual capacity, load factors, disruptions (rollovers, missed connections), and financials.</li>
+  <li><strong>Applied the intervention rule:</strong> For each Friday, increased available capacity by 20%. Re-allocated the 38 overflow shipments that were historically rolled onto Saturday flights. Reduced rollover-related disruption probability according to observed relationships.</li>
+  <li><strong>Re-computed metrics:</strong> Revenue (more shipments at correct product/rate), direct operating costs (extra flight cost ~€95K total over 13 Fridays), disruption costs (fewer rollovers → fewer penalty payments), OTP and NPS proxies for time-critical products.</li>
+  <li><strong>Result:</strong> Extra capacity would have absorbed 82% of the Friday overflow. After deducting the additional flight cost, net margin improvement is <strong class="c-ok">+€420K</strong> over the quarter.</li>
+</ul>
+
+<h4>Suggested Action</h4>
+<div class="rec-card">
+  <div class="rec-num">NEXT STEP · Medium confidence · 4-week live test</div>
+  <div class="rec-title">Run a 4-week live test adding extra Friday capacity on AMS–DXB</div>
+  <div class="rec-detail">Track: load factor, margin, disruption cost, and OTP for time-critical product versus the same period last year. If results confirm the counterfactual estimate, scale to AMS–JFK and FRA–DXB which show similar Friday overflow patterns.</div>
+</div>
+
+<div class="conf-note"><strong>Confidence: Medium.</strong> Based on replaying 13 weeks of actual data with a single variable change. Supported by similar historical patterns on AMS–JFK and FRA–DXB. Remaining uncertainty is driven by weather-related disruptions (not modelled in the intervention) and competitive capacity responses from Gulf carriers.</div>
+
+<div class="skill-link">
+  <p><strong>Related skill:</strong> <span class="tag tag-warn">Geopolitical Shock Analysis</span></p>
+  <p>This counterfactual was modelled at current fuel prices ($97/bbl). Want to see how the result changes under a ceasefire-collapse scenario — or check the current oil price impact across all routes?</p>
+  <ul>
+    <li><em>"How are rising oil prices impacting our margins?"</em></li>
+    <li><em>"What if the ceasefire falls through?"</em></li>
+  </ul>
+</div>`
+}
+
 function fallback(q) {
+  const skillList = listSkillSummaries()
   return `
 <p>I do not have a specific data match for that question yet. Based on what you asked, here are three things I can answer that may be relevant:</p>
 <ul>
@@ -382,6 +604,7 @@ function fallback(q) {
   <li><strong>Disruption costs</strong> — root causes, cost breakdown, and what can be recovered through SLA penalties.</li>
   <li><strong>Investment priorities</strong> — where the data supports acting now, and where more data is needed first.</li>
 </ul>
+${skillList ? `<p><strong>I also have these specialised skills loaded:</strong></p><ul>${skillList}</ul>` : ''}
 <p>Try asking in those terms, or click any metric in the bar above or a route in the sidebar to go directly to that data. What would be most useful?</p>
 <div class="conf-note"><strong>Note:</strong> CargoClaw is connected to TopFlight's operational data across 6 routes and 34 customer accounts. Questions outside that scope — e.g. competitor cost structures, macro freight market data, or data from other business units — are outside what I can answer with TopFlight's own evidence.</div>`
 }

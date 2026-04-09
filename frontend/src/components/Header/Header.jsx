@@ -1,6 +1,6 @@
 import './Header.css'
 
-export default function Header() {
+export default function Header({ page, onShowChat, onShowCF }) {
   return (
     <header>
       <div className="logo">
@@ -28,6 +28,11 @@ export default function Header() {
         <span className="status-txt">
           Connected · <em>TopFlight Live Data</em> · Last sync 2 min ago
         </span>
+      </div>
+
+      <div className="header-nav">
+        <button className={`nav-btn${page !== 'cf' ? ' active' : ''}`} onClick={onShowChat}>Chat</button>
+        <button className={`nav-btn${page === 'cf' ? ' active' : ''}`} onClick={onShowCF}>Counterfactual</button>
       </div>
 
       <div className="user-chip">
