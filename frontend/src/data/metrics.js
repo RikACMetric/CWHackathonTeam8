@@ -1,0 +1,50 @@
+export const METRICS = [
+  {
+    label: 'Cargo Margin',
+    value: '18.3%',
+    delta: '↓ 2.1pp',
+    type: 'bad',
+    valueColor: null, // uses type color
+    prompt: 'What is driving the drop in cargo margin?',
+  },
+  {
+    label: 'Disruption Cost',
+    value: '€2.4M',
+    delta: '↑ 34% MoM',
+    type: 'bad',
+    valueColor: 'var(--warn)',
+    prompt: 'What is causing our disruption costs to rise?',
+  },
+  {
+    label: 'Capacity Use',
+    value: '71%',
+    delta: 'Target 82%',
+    type: 'warn',
+    valueColor: null,
+    prompt: 'Which routes have the lowest capacity utilization?',
+  },
+  {
+    label: 'On-Time Performance',
+    value: '87.2%',
+    delta: '↑ 1.3pp',
+    type: 'ok',
+    valueColor: null,
+    prompt: 'How is our on-time performance trending by route?',
+  },
+  {
+    label: 'Customer NPS',
+    value: '34',
+    delta: '↓ 8 pts',
+    type: 'bad',
+    valueColor: null,
+    prompt: 'Which customer groups have a declining NPS and why?',
+  },
+  {
+    label: 'Revenue QTD',
+    value: '€84.2M',
+    delta: '+€2.5M vs target',
+    type: 'info',
+    valueColor: 'var(--text)',
+    prompt: 'What is our total cargo revenue this quarter versus target?',
+  },
+]

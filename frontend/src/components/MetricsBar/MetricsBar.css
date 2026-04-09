@@ -1,0 +1,82 @@
+.metrics-bar {
+  position: relative;
+  z-index: 9;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+.metrics-bar::-webkit-scrollbar { display: none; }
+
+.kpi {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px;
+  border-right: 1px solid var(--border-dim);
+  cursor: pointer;
+  transition: background 0.15s;
+  min-width: 155px;
+  flex-shrink: 0;
+  position: relative;
+}
+.kpi::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.kpi:hover { background: var(--card); }
+.kpi:hover::after { opacity: 1; }
+.kpi.bad::after   { background: var(--bad); }
+.kpi.warn::after  { background: var(--warn); }
+.kpi.ok::after    { background: var(--ok); }
+.kpi.info::after  { background: var(--info); }
+
+.kpi-indicator {
+  width: 3px;
+  height: 32px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.kpi.bad .kpi-indicator  { background: var(--bad); }
+.kpi.warn .kpi-indicator { background: var(--warn); }
+.kpi.ok .kpi-indicator   { background: var(--ok); }
+.kpi.info .kpi-indicator { background: var(--info); }
+
+.kpi-body { flex: 1; min-width: 0; }
+.kpi-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 3px;
+}
+.kpi-value {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1;
+}
+.kpi.bad .kpi-value  { color: var(--bad); }
+.kpi.warn .kpi-value { color: var(--warn); }
+.kpi.ok .kpi-value   { color: var(--ok); }
+.kpi.info .kpi-value { color: var(--text); }
+
+.kpi-delta {
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.kpi.bad .kpi-delta  { color: var(--bad); }
+.kpi.warn .kpi-delta { color: var(--text-muted); }
+.kpi.ok .kpi-delta   { color: var(--ok); }
+.kpi.info .kpi-delta { color: var(--ok); }
