@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './Sidebar.css'
 import RouteRow from './RouteRow'
-import { ROUTES, DATA_CURRENCY } from '../../data/routes'
+import { ROUTES, DOMAINS, DATA_CURRENCY } from '../../data/routes'
 
 const BUILT_IN_SKILLS = [
   { id: 'geo', name: 'Geopolitical Impact', icon: '🌍', desc: 'Oil prices, Iran conflict, ceasefire scenarios' },
@@ -17,6 +17,24 @@ export default function Sidebar({ firePrompt, customSkills = [] }) {
 
   return (
     <div className="sidebar">
+      {/* Data Domains */}
+      <div className="sb-section">
+        <div className="sb-label">Data Domains</div>
+        {DOMAINS.map((d, i) => (
+          <div
+            key={d.label}
+            className={`sb-item${i === 0 ? ' active' : ''}`}
+            onClick={() => firePrompt(d.prompt, { useLocalResponse: true })}
+          >
+            <span className="sb-icon">{d.icon}</span>
+            {d.label}
+            {d.badge && (
+              <span className={`sb-badge ${d.badge.type}`}>{d.badge.text}</span>
+            )}
+          </div>
+        ))}
+      </div>
+
       {/* Skills */}
       <div className="sb-section">
         <div className="sb-label sb-label-toggle" onClick={() => setSkillsOpen(!skillsOpen)}>
