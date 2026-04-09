@@ -10,6 +10,7 @@ const GEO_RE = /\b(iran|oil|fuel|brent|crude|geopolit|ceasefire|conflict|war|san
 const CF_RE = /\b(what if|what would|counterfactual|reroute|had we|would have|if we had|alternative)/i
 const ESC_RE = /\b(cascade|escalat|tier.?\d|response.?protocol|risk.?matrix|force.?majeure|ground.?handl|labour.?action|sla.?breach)/i
 const YOY_RE = /\b(last year|year.on.year|yoy|compar|previous year|vs.?\s*\d{4}|historical)/i
+const CSUITE_RE = /\b(c.?suite|exec|board|brief|summary for|ceo|cfo|leadership|stakeholder|management summary)/i
 
 const GEO_RESPONSE = `
 <p>I've run the geopolitical impact analysis. <strong>Check the Dashboard tab</strong> for the full breakdown.</p>
@@ -65,49 +66,81 @@ const YOY_RESPONSE = `
 <div class="conf-note"><strong>Key insight:</strong> The margin gap is accelerating. If current trends hold, Q2 will be −4.5pp below last year — the worst YoY deterioration since 2019.</div>
 `
 
+const CSUITE_RESPONSE = `
+<div class="rec-card" style="border-left: 3px solid var(--primary); margin-bottom: 12px;">
+  <div class="rec-num">EXECUTIVE BRIEFING — Q1 2026</div>
+  <div class="rec-title" style="font-size: 14px; margin-bottom: 8px;">TopFlight Cargo: Board-Ready Summary</div>
+</div>
+<ul>
+  <li><strong>Network margin at 18.3%</strong> — down 1.4pp vs plan, trending negative. Third consecutive week of compression.</li>
+  <li><strong>Top risk: Iran escalation.</strong> Brent at $97/bbl (+24% since Jan). If ceasefire collapses, €2.6–3.4M additional quarterly fuel cost pushes 3 routes below break-even.</li>
+  <li><strong>Top opportunity: LHR–ORD dynamic pricing.</strong> 24.1% margin — the pilot is working. Ready to scale to AMS–DXB and FRA–PVG.</li>
+  <li><strong>Revenue tracking €1.2M below Q1 target</strong> due to CDG–JFK under-booking (58% load factor) and FRA–PVG disruption penalties.</li>
+  <li><strong>FRA–PVG disruption costs tripled</strong> to €680K this quarter. Root cause is ramp handling, not weather — fixable but requires vendor action.</li>
+  <li><strong>Customer risk: 2 accounts flagged.</strong> DHL Express and Zara Logistics have capped fuel surcharges limiting pass-through on 18% of revenue.</li>
+  <li><strong>Board action needed:</strong> (1) Approve Q2 fuel hedging at current rates — €150K budget. (2) Authorise early renegotiation of DHL/Zara surcharge caps before Q3 renewal window.</li>
+</ul>
+<div class="conf-note"><strong>Confidence: High</strong> on financial data and route metrics. Medium on ceasefire scenario (analyst consensus + 2019 Hormuz analogue).</div>
+`
+
 export default function App() {
   const [page, setPage] = useState('login')
   const [dashView, setDashView] = useState(null)
   const [showYoY, setShowYoY] = useState(false)
-  const firedSkills = useRef({ geo: false, cf: false, esc: false, yoy: false })
-  const { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage } = useChat()
+  const firedSkills = useRef({ geo: false, cf: false, esc: false, yoy: false, csuite: false })
+  const { messages, typing, showChips, sendMessage, firePrompt, addUserMessage, addAgentMessage, showThinking, hideThinking } = useChat()
+
+  // Helper: show thinking for 5s, then run callback
+  const withThinking = useCallback((fn) => {
+    showThinking()
+    setTimeout(() => {
+      hideThinking()
+      fn()
+    }, 5000)
+  }, [showThinking, hideThinking])
 
   const handleSend = useCallback((text) => {
+    // C-suite summary — stays in chat, no dashboard switch
+    if (CSUITE_RE.test(text) && !firedSkills.current.csuite) {
+      firedSkills.current.csuite = true
+      addUserMessage(text)
+      withThinking(() => addAgentMessage(CSUITE_RESPONSE))
+    }
     // YoY follow-up — updates existing dashboard
-    if (YOY_RE.test(text) && !firedSkills.current.yoy) {
+    else if (YOY_RE.test(text) && !firedSkills.current.yoy) {
       firedSkills.current.yoy = true
       addUserMessage(text)
       setShowYoY(true)
-      setTimeout(() => {
+      withThinking(() => {
         addAgentMessage(YOY_RESPONSE)
         setTimeout(() => setPage('dash'), 1200)
-      }, 800)
+      })
     }
     // First-time skill triggers
     else if (ESC_RE.test(text) && !firedSkills.current.esc) {
       firedSkills.current.esc = true
       addUserMessage(text)
       setDashView('escalation')
-      setTimeout(() => {
+      withThinking(() => {
         addAgentMessage(ESC_RESPONSE)
         setTimeout(() => setPage('dash'), 1200)
-      }, 800)
+      })
     } else if (CF_RE.test(text) && !firedSkills.current.cf) {
       firedSkills.current.cf = true
       addUserMessage(text)
       setDashView('counterfactual')
-      setTimeout(() => {
+      withThinking(() => {
         addAgentMessage(CF_RESPONSE)
         setTimeout(() => setPage('dash'), 1200)
-      }, 800)
+      })
     } else if (GEO_RE.test(text) && !firedSkills.current.geo) {
       firedSkills.current.geo = true
       addUserMessage(text)
       setDashView('geopolitical')
-      setTimeout(() => {
+      withThinking(() => {
         addAgentMessage(GEO_RESPONSE)
         setTimeout(() => setPage('dash'), 1200)
-      }, 800)
+      })
     } else {
       // All other questions — use local response engine (no Claude CLI, no thinking)
       sendMessage(text, { useLocalResponse: true })

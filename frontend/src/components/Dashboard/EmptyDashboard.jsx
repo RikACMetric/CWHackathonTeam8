@@ -11,8 +11,9 @@ export default function EmptyDashboard() {
         </svg>
       </div>
       <h3>No analysis running</h3>
-      <p>Ask a question in the Chat tab to generate a dashboard.<br />
-      Try: <em>"How is the Iran situation affecting our fuel costs?"</em></p>
+      <p>Ask a question in the Chat tab to generate a dashboard.</p>
+      <p>Try: <em>"How is the Iran situation affecting our fuel costs?"</em><br />
+      Or: <em>"Give me a board-ready executive summary"</em></p>
     </div>
   )
 }
